@@ -1,0 +1,31 @@
+.flowchart-board {
+    height: 50rem;
+}
+
+.terminal {
+    padding: 1rem;
+    border-radius: 2rem;
+    width: 5rem;
+    height: 2rem;
+
+    background-color: aliceblue;
+    color: #0D1117;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
+.circle {
+    width: 1rem;
+    height: 1rem;
+
+    background-color: aliceblue;
+    border: #0D1117 2pt solid;
+
+    position: absolute;
+    top: 90%;
+    border-radius: 100%;
+}
