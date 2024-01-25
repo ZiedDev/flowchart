@@ -1,0 +1,54 @@
+{
+    "wires": {
+        "0": "1",
+        "1": "2",
+        "2": ["5","3"],
+        "3": "4",
+        "4": "2",
+        "5": "6"
+    },
+    "nodes": {
+        "0": {
+            "posx": 0,
+            "posy": 0,
+            "type": "start",
+            "content": "START"
+        },
+        "1": {
+            "posx": 2,
+            "posy": 2,
+            "type": "process",
+            "content": "c<-0\nt<-0"
+        },
+        "2": {
+            "posx": 2,
+            "posy": 7,
+            "type": "condition",
+            "content": "c=5"
+        },
+        "3": {
+            "posx": 2,
+            "posy": 5,
+            "type": "input",
+            "content": "input m"
+        },
+        "4": {
+            "posx": 2,
+            "posy": 7,
+            "type": "process",
+            "content": "c<-c+1\nt<-t+m"
+        },
+        "5": {
+            "posx": 2,
+            "posy": 7,
+            "type": "output",
+            "content": "output c,t"
+        },
+        "6": {
+            "posx": 5,
+            "posy": 10,
+            "type": "end",
+            "content": "END"
+        }
+    }
+}
