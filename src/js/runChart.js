@@ -5,8 +5,9 @@ const conditions = {
     '>=': '>=',
     '<': '<',
     '<=': '<=',
-    ' AND ': '&&',
-    ' OR ': '||',
+    'AND': '&&',
+    'OR': '||',
+    'NOT': '!',
 };
 const operations = {
     '<-': (x, y) => { return y },
@@ -15,6 +16,13 @@ const operations = {
     '*=': (x, y) => { return x * y },
     '/=': (x, y) => { return x / y },
     '%=': (x, y) => { return x % y },
+    '**=': (x, y) => { return x ** y },
+    '<<=': (x, y) => { return x << y },
+    '>>=': (x, y) => { return x >> y },
+    '>>>=': (x, y) => { return x >>> y },
+    '&=': (x, y) => { return x & y },
+    '^=': (x, y) => { return x ^ y },
+    '|=': (x, y) => { return x | y },
 };
 function DIV(x, y) {
     return Math.floor(x / y)
@@ -29,7 +37,7 @@ const allowedFunctions = [
     'Math.abs', 'Math.acos', 'Math.asin', 'Math.atan', 'Math.atan2', 'Math.ceil',
     'Math.cos', 'Math.exp', 'Math.floor', 'Math.log', 'Math.max', 'Math.min',
     'Math.pow', 'Math.random', 'Math.round', 'Math.sin', 'Math.sqrt', 'Math.tan',
-    'DIV', 'MOD', 'INT'
+    'DIV', 'MOD', 'INT',
 ];
 // Globals
 
