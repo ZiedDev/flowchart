@@ -13,16 +13,35 @@
 
     <div class="flowchart-board" id="flowchart-board"></div>
 
-    <template id="start-template">
-        <div class="terminal" id="start">
-            <h2>START</h2>
-            <!-- <div class="circle"></div> -->
+    <template id="terminal-template">
+        <div class="block-container" data-flowchart-block-id>
+            <div class="flowchart-block terminal">
+                <h2 data-flowchart-block-content>content</h2>
+            </div>
         </div>
     </template>
 
-    <template id="end-template">
-        <div class="terminal" id="end">
-            <h2>END</h2>
+    <template id="process-template">
+        <div class="block-container" data-flowchart-block-id>
+            <div class="flowchart-block process">
+                <h2 data-flowchart-block-content>content</h2>
+            </div>
+        </div>
+    </template>
+
+    <template id="decision-template">
+        <div class="block-container" data-flowchart-block-id>
+            <div class="flowchart-block decision">
+                <h2 data-flowchart-block-content>content</h2>
+            </div>
+        </div>
+    </template>
+
+    <template id="input-output-template">
+        <div class="block-container" data-flowchart-block-id>
+            <div class="flowchart-block input-output">
+                <h2 data-flowchart-block-content>content</h2>
+            </div>
         </div>
     </template>
 
