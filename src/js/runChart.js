@@ -16,11 +16,42 @@ const operations = {
     '/=': (x, y) => { return x / y },
     '%=': (x, y) => { return x % y },
 };
-// OPERATORS ??? nuh uh :<
+function DIV(x, y) {
+    return Math.floor(x / y)
+}
+function MOD(x, y) {
+    return x % y
+}
+function INT(x) {
+    return Math.floor(x)
+}
+const allowedFunctions = [
+    'Math.abs', 'Math.acos', 'Math.asin', 'Math.atan', 'Math.atan2', 'Math.ceil',
+    'Math.cos', 'Math.exp', 'Math.floor', 'Math.log', 'Math.max', 'Math.min',
+    'Math.pow', 'Math.random', 'Math.round', 'Math.sin', 'Math.sqrt', 'Math.tan',
+    'DIV', 'MOD', 'INT'
+];
+// Globals
 
 const operationPattern = Object.keys(operations).map(escapeRegExp).join('|');
 const regexPattern = new RegExp(`([^=<>]+)\\s*(${operationPattern})\\s*([^=<>]+)`);
 
+function safeEval(expression) {
+    const allowedFunctionNames = allowedFunctions.map(func => func.split('.')[1] || func);
+    const sanitizedExpression = expression.replace(/([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, (match, p1) => {
+        if (!allowedFunctionNames.includes(p1)) {
+            return 'function ' + p1 + '() { return 0; }(';
+        }
+        return match;
+    });
+    try {
+        const result = Function('"use strict"; return (' + sanitizedExpression + ')')();
+        return result;
+    } catch (error) {
+        console.error('Error evaluating expression:', error.message);
+        return 0;
+    }
+}
 function isQuotedString(str) {
     return str.length > 1 && (str[0] === str[str.length - 1]) && (str[0] === '"' || str[0] === "'");
 }
@@ -34,8 +65,8 @@ function runNode(chart, id, vars = {}) {
     let content = chart['nodes'][id]['content'];
     let connection = chart['wires'][id];
 
-    console.log(content);
-    // maybe add cool ass css on object
+    // OBJECT CSS
+    console.log(content, vars);
 
     if (type == 'condition') {
         Object.keys(conditions).forEach((condition) => {
@@ -47,7 +78,7 @@ function runNode(chart, id, vars = {}) {
             content = content.replace(regex, vars[variable]);
         });
 
-        let truthy = eval(content);
+        let truthy = safeEval(content);
         if (truthy) {
             runNode(chart, connection[0], vars);
         } else {
@@ -66,7 +97,11 @@ function runNode(chart, id, vars = {}) {
                     leftrep = leftrep.replace(regex, vars[variable]);
                     rightrep = rightrep.replace(regex, vars[variable]);
                 });
-                vars[leftOperand] = parseFloat(operations[operation](eval(leftrep.replace(/./g, '0')), eval(rightrep)));
+                if (Object.keys(vars).includes(leftOperand)) {
+                    vars[leftOperand] = operations[operation](safeEval(leftrep), safeEval(rightrep));
+                } else {
+                    vars[leftOperand] = operations[operation](0, safeEval(rightrep));
+                }
             })
         }
         if (type == 'input') {
