@@ -15,14 +15,16 @@ const decisionTemplate = document.getElementById('decision-template')
 const inputOutputTemplate = document.getElementById('input-output-template')
 
 const start = createFlowBlock('terminal', 'start', 'start')[1]
+const input = createFlowBlock('inputOutput', 'input', 'INPUT X',)[1]
+const condition = createFlowBlock('decision', 'condition', 'X > 5')[1]
 const end = createFlowBlock('terminal', 'end', 'end')[1]
 
-const asdsAdas1234 = createFlowBlock('inputOutput', 'asdsAdas1234', 'INPUT X')[1]
-const asdsAdas1234as = createFlowBlock('decision', 'asdsAdas1234as', 'X > 5')[1]
+const line1 = createLine('start', 'input', start, input)
+const line2 = createLine('input', 'condition', input, condition)
+const line3 = createLine('condition', 'end', condition, end)
 
-createLine('start', 'asdsAdas1234', start, asdsAdas1234)
-createLine('asdsAdas1234', 'asdsAdas1234as', asdsAdas1234, asdsAdas1234as)
-createLine('asdsAdas1234as', 'end', asdsAdas1234as, end)
+updateFlowBlock(input, 'onMove', () => { line1.position(), line2.position() })
+updateFlowBlock(condition, 'onMove', () => { line2.position(), line3.position() })
 
 function createFlowBlock(symbolType, id, content) {
     const flowchartSymbols = ['terminal', 'process', 'decision', 'inputOutput']
@@ -57,9 +59,15 @@ function createFlowBlock(symbolType, id, content) {
     return [element, elementDraggable]
 }
 
+function updateFlowBlock(flowBlock, func, whatToUpdate) {
+    flowBlock[func] = whatToUpdate
+}
+
 function createLine(start, end, startNode, endNode) {
     const line = new LeaderLine(document.getElementById(start), document.getElementById(end), { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: '#f0f8ff', path: 'fluid' })
 
     startNode.onMove = () => { line.position() }
     endNode.onMove = () => { line.position() }
+
+    return line
 }
