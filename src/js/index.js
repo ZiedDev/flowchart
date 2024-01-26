@@ -15,78 +15,91 @@ const decisionTemplate = document.getElementById('decision-template')
 const inputOutputTemplate = document.getElementById('input-output-template')
 
 // variables
-const draggables = []
 let currentTool
 
-// hard coded
-const start = createFlowBlock('terminal', '0', 'start', flowchartBoard, true)[1]
-const input = createFlowBlock('inputOutput', '1', 'INPUT X', flowchartBoard, true)[1]
-const condition = createFlowBlock('decision', '2', 'X > 5', flowchartBoard, true)[1]
-const end = createFlowBlock('terminal', '3', 'end', flowchartBoard, true)[1]
+// Un-needed
+const flowchartSymbols = ['terminal', 'process', 'decision', 'inputOutput']
 
-const line1 = createLine('0', '1')
-const line2 = createLine('1', '2')
-const line3 = createLine('2', '3')
-
-updateFlowBlock(start, 'onMove', () => { line1.position() })
-updateFlowBlock(input, 'onMove', () => { line1.position(), line2.position() })
-updateFlowBlock(condition, 'onMove', () => { line2.position(), line3.position() })
-updateFlowBlock(end, 'onMove', () => { line3.position() })
-
-function createFlowBlock(symbolType, id, content, draggable) {
-    const flowchartSymbols = ['terminal', 'process', 'decision', 'inputOutput']
-
-    let element
-
-    if (symbolType == 'terminal') {
-        element = terminalTemplate.content.cloneNode(true)
-        element.querySelector('[data-flowchart-block-id]').id = id
-        element.querySelector('[data-flowchart-block-content]').textContent = content
-
-    } else if (symbolType == 'process') {
-        element = processTemplate.content.cloneNode(true)
-        element.querySelector('[data-flowchart-block-id]').id = id
-        element.querySelector('[data-flowchart-block-content]').textContent = content
-
-    } else if (symbolType == 'decision') {
-        element = decisionTemplate.content.cloneNode(true)
-        element.querySelector('[data-flowchart-block-id]').id = id
-        element.querySelector('[data-flowchart-block-content]').textContent = content
-
-    } else if (symbolType == 'inputOutput') {
-        element = inputOutputTemplate.content.cloneNode(true)
-        element.querySelector('[data-flowchart-block-id]').id = id
-        element.querySelector('[data-flowchart-block-content]').textContent = content
-    }
-
-    if (!draggable) return element
-
-    element.querySelector('[data-flowchart-block-id]').classList.add('draggable')
-    flowchartBoard.appendChild(element)
-
-    const elementDraggable = new PlainDraggable(document.getElementById(id))
-    draggables.push(elementDraggable)
-
-    document.getElementById(id).addEventListener('click', () => {
-        if (currentTool == 'erase') {
-            draggables.splice(draggables.indexOf(elementDraggable), 1)
-            elementDraggable.remove()
-            document.getElementById(id).remove()
-        }
-    })
-
-    return [element, elementDraggable]
-}
-
-function updateFlowBlock(flowBlock, func, whatToUpdate) {
-    flowBlock[func] = whatToUpdate
-}
-
-function createLine(start, end) {
+function createLine(start, end, startNode, endNode) {
     const line = new LeaderLine(document.getElementById(start), document.getElementById(end), { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: '#f0f8ff', path: 'fluid' })
     return line
 }
 
+class FlowBlock {
+    constructor(id, type, content, pos) {
+        this.id = id;
+        this.type = type;
+        this.content = content;
+        [this.posx, this.posy] = pos;
+        [this.element, this.draggable] = this.createFlowBlock(type, id, content);
+        this.connections = [];
+        this.draggable['onMove'] = () => { this.connections.forEach((c) => { c.position() }) };
+    }
+
+    createFlowBlock() {
+        let element
+
+        if (this.type == 'terminal') {
+            element = terminalTemplate.content.cloneNode(true)
+        } else if (this.type == 'process') {
+            element = processTemplate.content.cloneNode(true)
+
+        } else if (this.type == 'decision') {
+            element = decisionTemplate.content.cloneNode(true)
+
+        } else if (this.type == 'inputOutput') {
+            element = inputOutputTemplate.content.cloneNode(true)
+        }
+        element.querySelector('[data-flowchart-block-id]').id = this.id
+        element.querySelector('[data-flowchart-block-content]').textContent = this.content
+
+        element.querySelector('[data-flowchart-block-id]').classList.add('draggable')
+        flowchartBoard.appendChild(element)
+        const elementDraggable = new PlainDraggable(document.getElementById(this.id))
+        
+        /*document.getElementById(this.id).addEventListener('click', () => {
+            if (currentTool == 'erase') {
+                draggables.splice(draggables.indexOf(elementDraggable), 1)
+                elementDraggable.remove()
+                document.getElementById(this.id).remove()
+            }
+        })*/
+
+        return [element, elementDraggable]
+    }
+
+    updateFlowBlock(func, whatToUpdate) {
+        this.draggable[func] = whatToUpdate
+    }
+}
+
+let connections = {}
+let flowBlocks = {}
+let global_index = -1
+
+function addFlowBlock(type, content, pos = [0, 0]) {
+    let newBlock = new FlowBlock(global_index + 1, type, content, pos)
+    flowBlocks[global_index + 1] = newBlock
+    global_index++
+}
+function remFlowBlock(id) {
+    // to implement
+}
+
+function addConnection(fromId, toId) {
+    let cid = `${fromId}:${toId}`
+    let startNode = flowBlocks[fromId]
+    let endNode = flowBlocks[toId]
+
+    connections[cid] = createLine(String(fromId), String(toId), startNode, endNode)
+    startNode.connections.push(connections[cid])
+    endNode.connections.push(connections[cid])
+}
+function remConnection(fromId, toId) {
+    // to implement
+}
+
+/*
 // addBlockPanel
 const addBlocksPanel = document.getElementById('add-blocks-panel')
 const addPanelBlocks = [['start', 'terminal'], ['end', 'terminal'], ['input', 'inputOutput'], ['output', 'inputOutput'], ['condition', 'decision']]
@@ -161,4 +174,14 @@ function toggleDraggables(enable) {
             draggables[i].disabled = false
         }
     }
-}
+}*/
+
+//HARD R CODED
+addFlowBlock('terminal', 'start')
+addFlowBlock('inputOutput', 'INPUT X')
+addFlowBlock('decision', 'X > 5')
+addFlowBlock('terminal', 'end')
+
+addConnection(0, 1)
+addConnection(1, 2)
+addConnection(2, 3)
