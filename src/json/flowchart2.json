@@ -25,7 +25,7 @@
         "2": {
             "posx": 2,
             "posy": 7,
-            "type": "condition",
+            "type": "decision",
             "content": "x>0"
         },
         "3": {

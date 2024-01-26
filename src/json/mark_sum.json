@@ -23,7 +23,7 @@
         "2": {
             "posx": 2,
             "posy": 7,
-            "type": "condition",
+            "type": "decision",
             "content": "c=5"
         },
         "3": {

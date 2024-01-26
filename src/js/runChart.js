@@ -76,7 +76,7 @@ function runNode(chart, id, vars = {}) {
     // OBJECT CSS
     console.log(content, vars);
 
-    if (type == 'condition') {
+    if (type == 'decision') {
         Object.keys(conditions).forEach((condition) => {
             const regex = new RegExp(condition, 'g');
             content = content.replace(regex, conditions[condition]);
