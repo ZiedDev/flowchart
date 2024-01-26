@@ -4,11 +4,19 @@
     display: grid;
     grid-template-columns: 1fr 7fr;
 
-    gap: 2rem;
+    overflow: hidden;
+}
+
+.add-blocks-panel-container {
+    background-color: #010409;
+    border-right: #21262D solid 0.5pt;
     overflow: hidden;
 }
 
 .add-blocks-panel {
+    height: 100%;
+    padding: 1rem 0;
+
     display: flex;
     flex-direction: column;
     justify-content: start;
@@ -16,19 +24,19 @@
 
     gap: 1rem;
 
-    background-color: #010409;
-    border-right: #21262D solid 0.5pt;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
-.add-blocks-panel * {
+.add-blocks-panel-container * {
     user-select: none;
 }
 
-.add-blocks-panel div {
+.add-blocks-panel-container div {
     cursor: pointer;
 }
 
-.add-blocks-panel .building-mode {
+.add-blocks-panel-container .building-mode {
     height: 3rem;
     width: 100%;
 
@@ -38,7 +46,7 @@
     border-bottom: #21262D solid 0.5pt;
 }
 
-.add-blocks-panel .building-mode button {
+.add-blocks-panel-container .building-mode button {
     cursor: pointer;
 
     background: none;
@@ -53,11 +61,11 @@
     align-items: center;
 }
 
-.add-blocks-panel .building-mode .active {
+.add-blocks-panel-container .building-mode .active {
     background-color: #0D1117;
 }
 
-.add-blocks-panel .building-mode button {
+.add-blocks-panel-container .building-mode button {
     border-left: #21262D solid 0.5pt;
 }
 
@@ -123,4 +131,8 @@
     position: absolute;
     top: 90%;
     border-radius: 100%;
+}
+
+.draggable {
+    position: absolute;
 }

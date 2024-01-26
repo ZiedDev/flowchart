@@ -16,6 +16,7 @@ const inputOutputTemplate = document.getElementById('input-output-template')
 
 // variables
 const draggables = []
+let currentTool
 
 // hard coded
 const start = createFlowBlock('terminal', '0', 'start', flowchartBoard, true)[1]
@@ -60,9 +61,19 @@ function createFlowBlock(symbolType, id, content, draggable) {
 
     if (!draggable) return element
 
+    element.querySelector('[data-flowchart-block-id]').classList.add('draggable')
     flowchartBoard.appendChild(element)
+
     const elementDraggable = new PlainDraggable(document.getElementById(id))
     draggables.push(elementDraggable)
+
+    document.getElementById(id).addEventListener('click', () => {
+        if (currentTool == 'erase') {
+            draggables.splice(draggables.indexOf(elementDraggable), 1)
+            elementDraggable.remove()
+            document.getElementById(id).remove()
+        }
+    })
 
     return [element, elementDraggable]
 }
@@ -85,6 +96,7 @@ for (let i = 0; i < addPanelElements.length; i++) {
     const ele = addPanelElements[i]
     addBlocksPanel.appendChild(ele[0])
     document.getElementById(ele[1]).addEventListener('click', () => createFlowBlock(ele[2], `${Math.floor(Math.random() * 99999)}`, '...', true))
+    // The Id part is placeholder and will be changed later
 }
 
 function createBlocksPanel(panelBlocks = []) {
@@ -98,25 +110,34 @@ function createBlocksPanel(panelBlocks = []) {
     return allBlocks
 }
 
-// building mode
+// tools
 const blocksButton = document.getElementById('blocks-button')
 const wiresButton = document.getElementById('wires-button')
 const moveButton = document.getElementById('move-button')
+const eraseButton = document.getElementById('erase-button')
 
 blocksButton.addEventListener('click', () => {
-    toggleSwitch([blocksButton, wiresButton, moveButton], 0, 'active', () => {
+    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 0, 'active', () => {
         toggleDraggables(false)
+        currentTool = 'blocks'
     })
 })
-
 wiresButton.addEventListener('click', () => {
-    toggleSwitch([blocksButton, wiresButton, moveButton], 1, 'active', () => {
+    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 1, 'active', () => {
         toggleDraggables(false)
+        currentTool = 'wires'
     })
 })
 moveButton.addEventListener('click', () => {
-    toggleSwitch([blocksButton, wiresButton, moveButton], 2, 'active', () => {
+    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 2, 'active', () => {
         toggleDraggables(true)
+        currentTool = 'move'
+    })
+})
+eraseButton.addEventListener('click', () => {
+    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 3, 'active', () => {
+        toggleDraggables(false)
+        currentTool = 'erase'
     })
 })
 
