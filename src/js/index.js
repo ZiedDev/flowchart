@@ -54,6 +54,7 @@ class FlowBlock {
         element.querySelector('[data-flowchart-block-content]').textContent = this.content
 
         element.querySelector('[data-flowchart-block-id]').classList.add('draggable')
+        element.querySelector('[data-flowchart-block-id]').style.transform = `translate(${this.posx}px,${this.posy}px)`
         flowchartBoard.appendChild(element)
         const elementDraggable = new PlainDraggable(document.getElementById(this.id))
         
@@ -178,7 +179,7 @@ function toggleDraggables(enable) {
 
 //HARD R CODED
 addFlowBlock('terminal', 'start')
-addFlowBlock('inputOutput', 'INPUT X')
+addFlowBlock('inputOutput', 'INPUT X',[100,100])
 addFlowBlock('decision', 'X > 5')
 addFlowBlock('terminal', 'end')
 
