@@ -1,5 +1,68 @@
+.main-content {
+    height: calc(100dvh - 5rem - 0.5pt);
+
+    display: grid;
+    grid-template-columns: 1fr 7fr;
+
+    gap: 2rem;
+    overflow: hidden;
+}
+
+.add-blocks-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+
+    gap: 1rem;
+
+    background-color: #010409;
+    border-right: #21262D solid 0.5pt;
+}
+
+.add-blocks-panel * {
+    user-select: none;
+}
+
+.add-blocks-panel div {
+    cursor: pointer;
+}
+
+.add-blocks-panel .building-mode {
+    height: 3rem;
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+
+    border-bottom: #21262D solid 0.5pt;
+}
+
+.add-blocks-panel .building-mode button {
+    cursor: pointer;
+
+    background: none;
+    color: aliceblue;
+    border: none;
+
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-blocks-panel .building-mode .active {
+    background-color: #0D1117;
+}
+
+.add-blocks-panel .building-mode button {
+    border-left: #21262D solid 0.5pt;
+}
+
 .flowchart-board {
-    height: 50rem;
+    height: 100%;
 }
 
 .block-container {
@@ -33,13 +96,13 @@
 }
 
 .decision {
-    transform: rotate(45deg);
+    transform: rotate(45deg) scale(75%);
 
     aspect-ratio: 1/1;
 }
 
 .decision * {
-    transform: rotate(-45deg);
+    transform: rotate(-45deg) scale(125%);
 }
 
 .input-output {
