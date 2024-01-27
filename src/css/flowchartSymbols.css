@@ -47,6 +47,10 @@
 }
 
 .add-blocks-panel-container .building-mode button {
+    transition: background-color 250ms ease-in-out;
+}
+
+.add-blocks-panel-container .building-mode button {
     cursor: pointer;
 
     background: none;
@@ -62,7 +66,7 @@
 }
 
 .add-blocks-panel-container .building-mode .active {
-    background-color: #0D1117;
+    background-color: #21262D;
 }
 
 .add-blocks-panel-container .building-mode button {

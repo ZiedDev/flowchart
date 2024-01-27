@@ -19,6 +19,7 @@ let currentTool
 
 // Un-needed
 const flowchartSymbols = ['terminal', 'process', 'decision', 'inputOutput']
+const allTools = ['hand', 'edit', 'connect', 'erase']
 
 function createLine(start, end, startNode, endNode) {
     const line = new LeaderLine(document.getElementById(start), document.getElementById(end), { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: '#f0f8ff', path: 'fluid' })
@@ -50,22 +51,19 @@ class FlowBlock {
         } else if (this.type == 'inputOutput') {
             element = inputOutputTemplate.content.cloneNode(true)
         }
-        element.querySelector('[data-flowchart-block-id]').id = this.id
+        element.querySelector('[data-flowchart-block-id]').id = `block-${this.id}`
         element.querySelector('[data-flowchart-block-content]').textContent = this.content
 
         element.querySelector('[data-flowchart-block-id]').classList.add('draggable')
         element.querySelector('[data-flowchart-block-id]').style.transform = `translate(${this.posx}px,${this.posy}px)`
         flowchartBoard.appendChild(element)
-        const elementDraggable = new PlainDraggable(document.getElementById(this.id))
+        const elementDraggable = new PlainDraggable(document.getElementById(`block-${this.id}`))
 
-        /*document.getElementById(this.id).addEventListener('click', () => {
+        document.getElementById(`block-${this.id}`).addEventListener('click', () => {
             if (currentTool == 'erase') {
-                draggables.splice(draggables.indexOf(elementDraggable), 1)
-                elementDraggable.remove()
-                document.getElementById(this.id).remove()
-                // -> remFlowBlock(this.id)
+                remFlowBlock(this.id)
             }
-        })*/
+        })
 
         return [element, elementDraggable]
     }
@@ -87,28 +85,39 @@ function addFlowBlock(type, content, pos = [0, 0]) {
 }
 function remFlowBlock(id) {
     // remove attached connections to flowblock
-    let currConnections =  
-    Object.keys(connections).map(str => str.split(':'))
-    .filter(key => {
-        return key[0] == id || key[1] == id
-    })
-    currConnections.forEach(k => {remConnection(k[0],k[1])})
+    let currConnections =
+        Object.keys(connections).map(str => str.split(':'))
+            .filter(key => {
+                return key[0] == id || key[1] == id
+            })
+    currConnections.forEach(k => { remConnection(k[0], k[1]) })
 
     // remove flowblock
     flowBlocks[String(id)].draggable.remove()
-    document.getElementById(id).remove()
+    document.getElementById(`block-${id}`).remove()
     delete flowBlocks[String(id)]
 
     // decrement ids
     let gids = Object.keys(flowBlocks).map(str => Number(str))
-    .filter(key => {
-        return key> Number(id)
-    })
+        .filter(key => {
+            return key > Number(id)
+        })
     gids.forEach(k => {
-        flowBlocks[k-1]=flowBlocks[k]
-        flowBlocks[k-1].id--
+        flowBlocks[k - 1] = flowBlocks[k]
+        flowBlocks[k - 1].id--
+        document.getElementById(`block-${k}`).id = `block-${k - 1}`
     })
     delete flowBlocks[Math.max(...gids)]
+
+    Object.keys(connections).forEach(key => {
+        let parts = key.split(':').map(str => Number(str))
+        if (parts[0] > Number(id)) parts[0]--
+        if (parts[1] > Number(id)) parts[1]--
+        let tmp = connections[key]
+        delete connections[key]
+        connections[parts.join(':')] = tmp
+    })
+
     global_index--
 }
 
@@ -117,15 +126,15 @@ function addConnection(fromId, toId) {
     let startNode = flowBlocks[fromId]
     let endNode = flowBlocks[toId]
 
-    connections[cid] = createLine(String(fromId), String(toId), startNode, endNode)
+    connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, startNode, endNode)
     startNode.connections.push(connections[cid])
     endNode.connections.push(connections[cid])
 }
 function remConnection(fromId, toId) {
     let cid = `${fromId}:${toId}`
 
-    flowBlocks[fromId].connections.splice(flowBlocks[fromId].connections.indexOf(connections[cid]),1)
-    flowBlocks[toId].connections.splice(flowBlocks[toId].connections.indexOf(connections[cid]),1)
+    flowBlocks[fromId].connections.splice(flowBlocks[fromId].connections.indexOf(connections[cid]), 1)
+    flowBlocks[toId].connections.splice(flowBlocks[toId].connections.indexOf(connections[cid]), 1)
 
     connections[cid].remove()
 
@@ -155,33 +164,34 @@ function createBlocksPanel(panelBlocks = []) {
 
     return allBlocks
 }
+*/
 
 // tools
-const blocksButton = document.getElementById('blocks-button')
-const wiresButton = document.getElementById('wires-button')
+const editButton = document.getElementById('edit-button')
+const connectButton = document.getElementById('connect-button')
 const moveButton = document.getElementById('move-button')
 const eraseButton = document.getElementById('erase-button')
 
-blocksButton.addEventListener('click', () => {
-    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 0, 'active', () => {
+editButton.addEventListener('click', () => {
+    toggleSwitch([editButton, connectButton, moveButton, eraseButton], 0, 'active', () => {
         toggleDraggables(false)
-        currentTool = 'blocks'
+        currentTool = 'edit'
     })
 })
-wiresButton.addEventListener('click', () => {
-    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 1, 'active', () => {
+connectButton.addEventListener('click', () => {
+    toggleSwitch([editButton, connectButton, moveButton, eraseButton], 1, 'active', () => {
         toggleDraggables(false)
-        currentTool = 'wires'
+        currentTool = 'connect'
     })
 })
 moveButton.addEventListener('click', () => {
-    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 2, 'active', () => {
+    toggleSwitch([editButton, connectButton, moveButton, eraseButton], 2, 'active', () => {
         toggleDraggables(true)
         currentTool = 'move'
     })
 })
 eraseButton.addEventListener('click', () => {
-    toggleSwitch([blocksButton, wiresButton, moveButton, eraseButton], 3, 'active', () => {
+    toggleSwitch([editButton, connectButton, moveButton, eraseButton], 3, 'active', () => {
         toggleDraggables(false)
         currentTool = 'erase'
     })
@@ -197,26 +207,34 @@ function toggleSwitch(toggleSwitches = [], index, activeClass, onActivateFunc = 
 }
 
 function toggleDraggables(enable) {
-    if (!enable) {
-        for (let i = 0; i < draggables.length; i++) {
-            draggables[i].disabled = true
-        }
+    if (enable) {
+        Object.keys(flowBlocks).forEach(key => {
+            flowBlocks[key].draggable.disabled = false
+        })
     }
     else {
-        for (let i = 0; i < draggables.length; i++) {
-            draggables[i].disabled = false
-        }
+        Object.keys(flowBlocks).forEach(key => {
+            flowBlocks[key].draggable.disabled = true
+        })
     }
-}*/
+}
+
+// Side Panel
+document.getElementById('start').addEventListener('click', () => addFlowBlock('terminal', 'start', [0, 0]))
+document.getElementById('end').addEventListener('click', () => addFlowBlock('terminal', 'end', [0, 0]))
+document.getElementById('process').addEventListener('click', () => addFlowBlock('terminal', 'process', [0, 0]))
+document.getElementById('decision').addEventListener('click', () => addFlowBlock('terminal', 'decision', [0, 0]))
+document.getElementById('input').addEventListener('click', () => addFlowBlock('terminal', 'input', [0, 0]))
+document.getElementById('output').addEventListener('click', () => addFlowBlock('terminal', 'output', [0, 0]))
 
 //HARD R CODED
-addFlowBlock('terminal', 'start')
+addFlowBlock('terminal', 'start', [0, 0])
 addFlowBlock('inputOutput', 'INPUT X', [100, 100])
-addFlowBlock('decision', 'X > 5')
-addFlowBlock('terminal', 'end')
+addFlowBlock('decision', 'X > 5', [200, 300])
+addFlowBlock('terminal', 'end', [500, 300])
 
 addConnection(0, 1)
 addConnection(1, 2)
 addConnection(2, 3)
 
-remFlowBlock(2)
+// remFlowBlock(2)
