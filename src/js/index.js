@@ -1,5 +1,6 @@
 import PlainDraggable from 'plain-draggable'
 import LeaderLine from 'leader-line-new'
+import PointerTracker from 'pointer-tracker'
 
 import '../css/index.css'
 import '../css/flowchartSymbols.css'
@@ -21,7 +22,7 @@ let currentTool
 const flowchartSymbols = ['terminal', 'process', 'decision', 'inputOutput']
 const allTools = ['hand', 'edit', 'connect', 'erase']
 
-function createLine(start, end, startNode, endNode) {
+function createLine(start, end) {
     const line = new LeaderLine(document.getElementById(start), document.getElementById(end), { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: '#f0f8ff', path: 'fluid' })
     return line
 }
@@ -126,7 +127,7 @@ function addConnection(fromId, toId) {
     let startNode = flowBlocks[fromId]
     let endNode = flowBlocks[toId]
 
-    connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, startNode, endNode)
+    connections[cid] = createLine(`block-${fromId}`, `block-${toId}`)
     startNode.connections.push(connections[cid])
     endNode.connections.push(connections[cid])
 }
@@ -176,24 +177,36 @@ editButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 0, 'active', () => {
         toggleDraggables(false)
         currentTool = 'edit'
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.remove('active')
+        })
     })
 })
 connectButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 1, 'active', () => {
         toggleDraggables(false)
         currentTool = 'connect'
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.add('active')
+        })
     })
 })
 moveButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 2, 'active', () => {
         toggleDraggables(true)
         currentTool = 'move'
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.remove('active')
+        })
     })
 })
 eraseButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 3, 'active', () => {
         toggleDraggables(false)
         currentTool = 'erase'
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.remove('active')
+        })
     })
 })
 
@@ -226,6 +239,44 @@ document.getElementById('process').addEventListener('click', () => addFlowBlock(
 document.getElementById('decision').addEventListener('click', () => addFlowBlock('terminal', 'decision', [0, 0]))
 document.getElementById('input').addEventListener('click', () => addFlowBlock('terminal', 'input', [0, 0]))
 document.getElementById('output').addEventListener('click', () => addFlowBlock('terminal', 'output', [0, 0]))
+
+let isDraggingBlock = false
+let draggingBlock
+let line
+
+// connections tool
+const pointerTracker = new PointerTracker(flowchartBoard, {
+    start(pointer, event) {
+        let temp = event.target
+
+        if (temp.classList.contains('flowchart-block')) {
+            draggingBlock = temp.parentElement
+            isDraggingBlock = true
+
+            document.getElementById('tracker').style.transform = `translate(${pointer.clientX}px,calc(${pointer.clientY}px - 5rem))`
+            line = createLine(draggingBlock.id, 'tracker')
+            return true
+        }
+    },
+    move(previousPointers, changedPointers, event) {
+        let temp = event.target
+
+        document.getElementById('tracker').style.transform = `translate(${changedPointers[0].clientX}px,calc(${changedPointers[0].clientY}px - 5rem))`
+        line.position()
+    },
+    end(pointer, event, cancelled) {
+        let temp = event.target
+
+        if (temp.classList.contains('flowchart-block')) {
+            console.log('connect');
+        }
+
+        line.remove()
+        isDraggingBlock = false
+    },
+    avoidPointerEvents: true,
+    rawUpdates: false,
+})
 
 //HARD R CODED
 addFlowBlock('terminal', 'start', [0, 0])

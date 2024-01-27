@@ -28,3 +28,9 @@ body * {
 .hide {
     display: none;
 }
+
+#tracker {
+    position: absolute;
+    user-select: none;
+    pointer-events: none;
+}
