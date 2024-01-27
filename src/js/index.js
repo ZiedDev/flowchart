@@ -15,18 +15,15 @@ const processTemplate = document.getElementById('process-template')
 const decisionTemplate = document.getElementById('decision-template')
 const inputOutputTemplate = document.getElementById('input-output-template')
 
-// variables
-let currentTool
-
-// Un-needed
+// un-needed
 const flowchartSymbols = ['terminal', 'process', 'decision', 'inputOutput']
 const allTools = ['hand', 'edit', 'connect', 'erase']
 
+// flowBlock
 function createLine(start, end) {
     const line = new LeaderLine(document.getElementById(start), document.getElementById(end), { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: '#f0f8ff', path: 'fluid' })
     return line
 }
-
 class FlowBlock {
     constructor(id, type, content, pos) {
         this.id = id;
@@ -74,7 +71,7 @@ class FlowBlock {
     }
 }
 
-// Chart
+// chart
 let connections = {}
 let flowBlocks = {}
 let global_index = -1
@@ -142,32 +139,39 @@ function remConnection(fromId, toId) {
     delete connections[cid]
 }
 
-/*
-// addBlockPanel
-const addBlocksPanel = document.getElementById('add-blocks-panel')
-const addPanelBlocks = [['start', 'terminal'], ['end', 'terminal'], ['input', 'inputOutput'], ['output', 'inputOutput'], ['condition', 'decision']]
-const addPanelElements = createBlocksPanel(addPanelBlocks)
+function objectifyChart() {
+    let res = { 'wires': {}, 'nodes': {} }
+    Object.keys(flowBlocks).forEach(key => {
+        let f = flowBlocks[key]
+        res['nodes'][key] = {
+            "posx": f.posx,
+            "posy": f.posy,
+            "type": f.type,
+            "content": f.content
+        }
+    })
 
-for (let i = 0; i < addPanelElements.length; i++) {
-    const ele = addPanelElements[i]
-    addBlocksPanel.appendChild(ele[0])
-    document.getElementById(ele[1]).addEventListener('click', () => createFlowBlock(ele[2], `${Math.floor(Math.random() * 99999)}`, '...', true))
-    // The Id part is placeholder and will be changed later
+    Object.keys(connections).forEach(key => {
+        let parts = key.split(':')
+        res['wires'][parts[0]] = parts[1]
+    })
+    return res
 }
+function personalifyChart(object) {
+    connections = {}
+    flowBlocks = {}
+    global_index = -1
+    Object.keys(object['nodes']).forEach(key => {
+        addFlowBlock(object['nodes'][key]['type'], object['nodes'][key]['content'], [object['nodes'][key]['posx'], object['nodes'][key]['posy']])
+    })
 
-function createBlocksPanel(panelBlocks = []) {
-    const allBlocks = []
-
-    for (let i = 0; i < panelBlocks.length; i++) {
-        const element = createFlowBlock(panelBlocks[i][1], panelBlocks[i][0], panelBlocks[i][0], false)
-        allBlocks.push([element, panelBlocks[i][0], panelBlocks[i][1]])
-    }
-
-    return allBlocks
+    Object.keys(object['wires']).forEach(key => {
+        addConnection(key, object['wires'][key])
+    })
 }
-*/
 
 // tools
+let currentTool
 const editButton = document.getElementById('edit-button')
 const connectButton = document.getElementById('connect-button')
 const moveButton = document.getElementById('move-button')
@@ -218,7 +222,6 @@ function toggleSwitch(toggleSwitches = [], index, activeClass, onActivateFunc = 
     toggleSwitches[index].classList.add(activeClass)
     onActivateFunc()
 }
-
 function toggleDraggables(enable) {
     if (enable) {
         Object.keys(flowBlocks).forEach(key => {
@@ -232,7 +235,7 @@ function toggleDraggables(enable) {
     }
 }
 
-// Side Panel
+// side Panel
 document.getElementById('start').addEventListener('click', () => addFlowBlock('terminal', 'start', [0, 0]))
 document.getElementById('end').addEventListener('click', () => addFlowBlock('terminal', 'end', [0, 0]))
 document.getElementById('process').addEventListener('click', () => addFlowBlock('terminal', 'process', [0, 0]))
@@ -268,7 +271,21 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
         let temp = event.target
 
         if (temp.classList.contains('flowchart-block')) {
-            console.log('connect');
+            let startId = draggingBlock.id.replace('block-', '')
+            let endId = temp.parentElement.id.replace('block-', '')
+
+            Object.keys(connections)
+                .filter(key => {
+                    return key.split(':')[0] == startId
+                })
+                .forEach(key => {
+                    remConnection(startId, key.split(':')[1])
+                })
+            addConnection(startId, endId)
+            // connection bugs:
+            // -conditions
+            // -end
+            // -self connection
         }
 
         line.remove()
@@ -289,3 +306,6 @@ addConnection(1, 2)
 addConnection(2, 3)
 
 // remFlowBlock(2)
+let x = objectifyChart()
+personalifyChart(x)
+console.log(x, connections, flowBlocks)

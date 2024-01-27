@@ -92,10 +92,7 @@ function runNode(chart, id, vars = {}) {
         } else {
             runNode(chart, connection[1], vars);
         }
-    } else if (type != 'end') {
-        if (type == 'start') {
-            // START
-        }
+    } else if (type != 'terminal') {
         if (type == 'process') {
             content.split('\n').forEach((line) => {
                 const [, leftOperand, operation, rightOperand] = line.match(regexPattern);
@@ -112,32 +109,37 @@ function runNode(chart, id, vars = {}) {
                 }
             })
         }
-        if (type == 'input') {
-            let varNames = content.replace("input ", "").split(',');
-            for (let i = 0; i < varNames.length; i++) {
-                let inputValue = parseFloat(prompt("Enter value for " + varNames[i]));
-                vars[varNames[i]] = inputValue;
-            }
-        }
-        if (type == 'output') {
-            let outputs = content.replace("output ", "").replace("print ", "").split(',');
-            let evaluatedValues = [];
-
-            for (let i = 0; i < outputs.length; i++) {
-                let varName = outputs[i].trim();
-                if (vars.hasOwnProperty(varName)) {
-                    evaluatedValues.push(vars[varName]);
-                } else {
-                    if (isQuotedString(varName)) {
-                        varName = varName.substring(1, varName.length - 1);
-                    }
-                    evaluatedValues.push(varName);
+        if (type == 'inputOutput') {
+            if (content.startsWith('input')) {
+                let varNames = content.replace("input ", "").split(',');
+                for (let i = 0; i < varNames.length; i++) {
+                    let inputValue = parseFloat(prompt("Enter value for " + varNames[i]));
+                    vars[varNames[i]] = inputValue;
                 }
+            } else if (content.startsWith('output') || content.startsWith('print')) {
+                let outputs = content.replace("output ", "").replace("print ", "").split(',');
+                let evaluatedValues = [];
+
+                for (let i = 0; i < outputs.length; i++) {
+                    let varName = outputs[i].trim();
+                    if (vars.hasOwnProperty(varName)) {
+                        evaluatedValues.push(vars[varName]);
+                    } else {
+                        if (isQuotedString(varName)) {
+                            varName = varName.substring(1, varName.length - 1);
+                        }
+                        evaluatedValues.push(varName);
+                    }
+                }
+                alert(evaluatedValues.join(' '));
             }
-            alert(evaluatedValues.join(' '));
         }
         runNode(chart, connection, vars);
     } else {
-        // END
+        if (content == 'start') {
+            // START
+        } else {
+            // END
+        }
     }
 }
