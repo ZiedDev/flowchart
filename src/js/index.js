@@ -57,12 +57,13 @@ class FlowBlock {
         element.querySelector('[data-flowchart-block-id]').style.transform = `translate(${this.posx}px,${this.posy}px)`
         flowchartBoard.appendChild(element)
         const elementDraggable = new PlainDraggable(document.getElementById(this.id))
-        
+
         /*document.getElementById(this.id).addEventListener('click', () => {
             if (currentTool == 'erase') {
                 draggables.splice(draggables.indexOf(elementDraggable), 1)
                 elementDraggable.remove()
                 document.getElementById(this.id).remove()
+                // -> remFlowBlock(this.id)
             }
         })*/
 
@@ -74,6 +75,7 @@ class FlowBlock {
     }
 }
 
+// Chart
 let connections = {}
 let flowBlocks = {}
 let global_index = -1
@@ -84,7 +86,30 @@ function addFlowBlock(type, content, pos = [0, 0]) {
     global_index++
 }
 function remFlowBlock(id) {
-    // to implement
+    // remove attached connections to flowblock
+    let currConnections =  
+    Object.keys(connections).map(str => str.split(':'))
+    .filter(key => {
+        return key[0] == id || key[1] == id
+    })
+    currConnections.forEach(k => {remConnection(k[0],k[1])})
+
+    // remove flowblock
+    flowBlocks[String(id)].draggable.remove()
+    document.getElementById(id).remove()
+    delete flowBlocks[String(id)]
+
+    // decrement ids
+    let gids = Object.keys(flowBlocks).map(str => Number(str))
+    .filter(key => {
+        return key> Number(id)
+    })
+    gids.forEach(k => {
+        flowBlocks[k-1]=flowBlocks[k]
+        flowBlocks[k-1].id--
+    })
+    delete flowBlocks[Math.max(...gids)]
+    global_index--
 }
 
 function addConnection(fromId, toId) {
@@ -97,7 +122,14 @@ function addConnection(fromId, toId) {
     endNode.connections.push(connections[cid])
 }
 function remConnection(fromId, toId) {
-    // to implement
+    let cid = `${fromId}:${toId}`
+
+    flowBlocks[fromId].connections.splice(flowBlocks[fromId].connections.indexOf(connections[cid]),1)
+    flowBlocks[toId].connections.splice(flowBlocks[toId].connections.indexOf(connections[cid]),1)
+
+    connections[cid].remove()
+
+    delete connections[cid]
 }
 
 /*
@@ -179,10 +211,12 @@ function toggleDraggables(enable) {
 
 //HARD R CODED
 addFlowBlock('terminal', 'start')
-addFlowBlock('inputOutput', 'INPUT X',[100,100])
+addFlowBlock('inputOutput', 'INPUT X', [100, 100])
 addFlowBlock('decision', 'X > 5')
 addFlowBlock('terminal', 'end')
 
 addConnection(0, 1)
 addConnection(1, 2)
 addConnection(2, 3)
+
+remFlowBlock(2)
