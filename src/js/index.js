@@ -49,12 +49,24 @@ class FlowBlock {
         } else if (this.type == 'inputOutput') {
             element = inputOutputTemplate.content.cloneNode(true)
         }
-        element.querySelector('[data-flowchart-block-id]').id = `block-${this.id}`
-        element.querySelector('[data-flowchart-block-content]').textContent = this.content
+        const elementId = element.querySelector('[data-flowchart-block-id]')
+        const elementContent = element.querySelector('[data-flowchart-block-content]')
+        const elementEdit = element.querySelector('[data-flowchart-block-edit]')
 
-        element.querySelector('[data-flowchart-block-id]').classList.add('draggable')
-        element.querySelector('[data-flowchart-block-id]').style.transform = `translate(${this.posx}px,${this.posy}px)`
+        elementId.id = `block-${this.id}`
+        elementContent.textContent = this.content
+
+        elementId.classList.add('draggable')
+        elementId.style.transform = `translate(${this.posx}px,${this.posy}px)`
+        if (elementEdit != undefined) {
+            elementEdit.value = this.content
+            elementEdit.oninput = () => {
+                elementContent.textContent = elementEdit.value
+            }
+        }
+
         flowchartBoard.appendChild(element)
+
         const elementDraggable = new PlainDraggable(document.getElementById(`block-${this.id}`))
 
         document.getElementById(`block-${this.id}`).addEventListener('click', () => {
@@ -180,6 +192,7 @@ const eraseButton = document.getElementById('erase-button')
 editButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 0, 'active', () => {
         toggleDraggables(false)
+        enableEdit(true)
         currentTool = 'edit'
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.remove('active')
@@ -189,6 +202,7 @@ editButton.addEventListener('click', () => {
 connectButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 1, 'active', () => {
         toggleDraggables(false)
+        enableEdit(false)
         currentTool = 'connect'
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.add('active')
@@ -198,6 +212,7 @@ connectButton.addEventListener('click', () => {
 moveButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 2, 'active', () => {
         toggleDraggables(true)
+        enableEdit(false)
         currentTool = 'move'
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.remove('active')
@@ -207,6 +222,7 @@ moveButton.addEventListener('click', () => {
 eraseButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 3, 'active', () => {
         toggleDraggables(false)
+        enableEdit(false)
         currentTool = 'erase'
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.remove('active')
@@ -222,6 +238,7 @@ function toggleSwitch(toggleSwitches = [], index, activeClass, onActivateFunc = 
     toggleSwitches[index].classList.add(activeClass)
     onActivateFunc()
 }
+
 function toggleDraggables(enable) {
     if (enable) {
         Object.keys(flowBlocks).forEach(key => {
@@ -231,6 +248,31 @@ function toggleDraggables(enable) {
     else {
         Object.keys(flowBlocks).forEach(key => {
             flowBlocks[key].draggable.disabled = true
+        })
+    }
+}
+
+function enableEdit(enable) {
+    if (enable) {
+        document.querySelectorAll('[data-flowchart-block-content]').forEach(key => {
+            if (!key.parentElement.classList.contains('terminal')) {
+                key.classList.add('hide')
+            }
+        })
+
+        document.querySelectorAll('[data-flowchart-block-edit]').forEach(key => {
+            key.classList.remove('hide')
+        })
+    }
+    else {
+        document.querySelectorAll('[data-flowchart-block-content]').forEach(key => {
+            if (!key.classList.contains('terminal')) {
+                key.classList.remove('hide')
+            }
+        })
+
+        document.querySelectorAll('[data-flowchart-block-edit]').forEach(key => {
+            key.classList.add('hide')
         })
     }
 }
@@ -250,6 +292,7 @@ let line
 // connections tool
 const pointerTracker = new PointerTracker(flowchartBoard, {
     start(pointer, event) {
+        if (currentTool != 'connect') return false
         let temp = event.target
 
         if (temp.classList.contains('flowchart-block')) {
@@ -306,6 +349,6 @@ addConnection(1, 2)
 addConnection(2, 3)
 
 // remFlowBlock(2)
-let x = objectifyChart()
-personalifyChart(x)
-console.log(x, connections, flowBlocks)
+// let x = objectifyChart()
+// personalifyChart(x)
+// console.log(x, connections, flowBlocks)

@@ -118,6 +118,16 @@
     align-items: center;
 }
 
+.flowchart-block input {
+    width: 5rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: transparent;
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 .flowchart-block .active {
     pointer-events: none;
     user-select: none;
