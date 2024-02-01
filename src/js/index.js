@@ -3,7 +3,8 @@ import LeaderLine from 'leader-line-new'
 import PointerTracker from 'pointer-tracker'
 
 import '../css/index.css'
-import '../css/flowchartSymbols.css'
+import '../css/main.css'
+import '../css/mainMobile.css';
 
 import flowchart from '../json/flowchart.json'
 

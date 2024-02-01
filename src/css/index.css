@@ -2,12 +2,14 @@ html,
 body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
 }
 
 body {
     color: #E6EDF3;
     background-color: #0D1117;
     min-height: 100dvh;
+
 }
 
 body * {
@@ -15,6 +17,22 @@ body * {
 
     margin: 0;
     padding: 0;
+}
+
+body *::-webkit-scrollbar {
+    cursor: grab;
+    width: 0.5rem;
+}
+
+body *::-webkit-scrollbar-track {
+    cursor: grab;
+    background: #21262D;
+}
+
+body *::-webkit-scrollbar-thumb {
+    cursor: grab;
+    background: #454f5e;
+    border-radius: 1rem;
 }
 
 .title {

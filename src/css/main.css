@@ -2,7 +2,7 @@
     height: calc(100dvh - 5rem - 0.5pt);
 
     display: grid;
-    grid-template-columns: 1fr 7fr;
+    grid-template-columns: max-content 7fr;
 
     overflow: hidden;
 }
@@ -14,7 +14,7 @@
 }
 
 .add-blocks-panel {
-    height: 100%;
+    height: calc(100% - 3rem);
     padding: 1rem 0;
 
     display: flex;
@@ -47,10 +47,6 @@
 }
 
 .add-blocks-panel-container .building-mode button {
-    transition: background-color 250ms ease-in-out;
-}
-
-.add-blocks-panel-container .building-mode button {
     cursor: pointer;
 
     background: none;
@@ -63,12 +59,12 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    transition: background-color 250ms ease-in-out;
 }
 
-.add-blocks-panel-container .building-mode button * {
-    padding: 0.5rem;
-    width: calc(100% - 1rem);
-    height: calc(100% - 1rem);
+.add-blocks-panel-container .building-mode button>svg {
+    height: 100%;
 }
 
 .add-blocks-panel-container .building-mode button .active {

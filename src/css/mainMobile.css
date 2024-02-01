@@ -1,0 +1,17 @@
+@media screen and (orientation: portrait) {
+    .main-content {
+        display: flex;
+        flex-direction: column-reverse;
+
+        overflow: hidden;
+    }
+
+    .add-blocks-panel-container {}
+
+    .add-blocks-panel {
+        padding: 0;
+        flex-direction: row;
+        overflow-x: scroll;
+        overflow-y: hidden;
+    }
+}
