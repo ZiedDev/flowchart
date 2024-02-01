@@ -90,9 +90,10 @@ let global_index = -1
 
 function addFlowBlock(type, content, pos = [0, 0]) {
     let newBlock = new FlowBlock(global_index + 1, type, content, pos)
-    flowBlocks[global_index + 1] = newBlock
+    flowBlocks[String(global_index + 1)] = newBlock
     global_index++
 }
+//CHANGE
 function remFlowBlock(id) {
     // remove attached connections to flowblock
     let currConnections =
@@ -113,11 +114,11 @@ function remFlowBlock(id) {
             return key > Number(id)
         })
     gids.forEach(k => {
-        flowBlocks[k - 1] = flowBlocks[k]
-        flowBlocks[k - 1].id--
+        flowBlocks[String(k - 1)] = flowBlocks[String(k)]
+        flowBlocks[String(k - 1)].id--
         document.getElementById(`block-${k}`).id = `block-${k - 1}`
     })
-    delete flowBlocks[Math.max(...gids)]
+    delete flowBlocks[String(Math.max(...gids))]
 
     Object.keys(connections).forEach(key => {
         let parts = key.split(':').map(str => Number(str))
@@ -151,6 +152,8 @@ function remConnection(fromId, toId) {
     delete connections[cid]
 }
 
+// :>
+//CHANGE
 function objectifyChart() {
     let res = { 'wires': {}, 'nodes': {} }
     Object.keys(flowBlocks).forEach(key => {
@@ -170,13 +173,13 @@ function objectifyChart() {
     return res
 }
 function personalifyChart(object) {
-    connections = {}
-    flowBlocks = {}
-    global_index = -1
-    Object.keys(object['nodes']).forEach(key => {
-        addFlowBlock(object['nodes'][key]['type'], object['nodes'][key]['content'], [object['nodes'][key]['posx'], object['nodes'][key]['posy']])
-    })
+    for (let i = 0; i < Object.keys(flowBlocks).length; i++) remFlowBlock(0)
 
+    Object.keys(object['nodes']).forEach(key => {
+        addFlowBlock(object['nodes'][key]['type'],
+            object['nodes'][key]['content'],
+            [object['nodes'][key]['posx'], object['nodes'][key]['posy']])
+    })
     Object.keys(object['wires']).forEach(key => {
         addConnection(key, object['wires'][key])
     })
@@ -290,6 +293,7 @@ let draggingBlock
 let line
 
 // connections tool
+//CHANGE
 const pointerTracker = new PointerTracker(flowchartBoard, {
     start(pointer, event) {
         if (currentTool != 'connect') return false
@@ -318,17 +322,22 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
                 let startId = draggingBlock.id.replace('block-', '')
                 let endId = temp.parentElement.id.replace('block-', '')
 
-                Object.keys(connections)
-                    .filter(key => {
-                        return key.split(':')[0] == startId
-                    })
-                    .forEach(key => {
-                        remConnection(startId, key.split(':')[1])
-                    })
-                addConnection(startId, endId)
+                if ((flowBlocks[startId].type == 'terminal' && flowBlocks[startId].content == 'end') || (flowBlocks[endId].type == 'terminal' && flowBlocks[endId].content == 'start')) {
+
+                } else {
+                    Object.keys(connections)
+                        .filter(key => {
+                            return key.split(':')[0] == startId
+                        })
+                        .forEach(key => {
+                            remConnection(startId, key.split(':')[1])
+                        })
+                    addConnection(startId, endId)
+                }
+
                 // connection bugs:
                 // -conditions
-                // -start/end
+                // -start/end ✅
                 // -self connection ✅
                 // -mobile ✅
             }
@@ -343,15 +352,19 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
 
 //HARD R CODED
 addFlowBlock('terminal', 'start', [0, 0])
-addFlowBlock('inputOutput', 'INPUT X', [100, 100])
+addFlowBlock('inputOutput', 'input X', [100, 100])
 addFlowBlock('decision', 'X > 5', [200, 300])
+addFlowBlock('inputOutput', 'output X', [200, 350])
 addFlowBlock('terminal', 'end', [500, 300])
 
 addConnection(0, 1)
 addConnection(1, 2)
 addConnection(2, 3)
+addConnection(2, 4)
+addConnection(3, 4)
 
 // remFlowBlock(2)
-// let x = objectifyChart()
-// personalifyChart(x)
-// console.log(x, connections, flowBlocks)
+//let x = objectifyChart()
+// console.log(x)
+//personalifyChart(x)
+//console.log(connections, flowBlocks)
