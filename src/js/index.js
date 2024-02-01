@@ -311,24 +311,27 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
         line.position()
     },
     end(pointer, event, cancelled) {
-        let temp = event.target
+        let temp = document.elementFromPoint(pointer.clientX, pointer.clientY)
 
-        if (temp.classList.contains('flowchart-block')) {
-            let startId = draggingBlock.id.replace('block-', '')
-            let endId = temp.parentElement.id.replace('block-', '')
+        if (draggingBlock != temp.parentElement) {
+            if (temp.classList.contains('flowchart-block')) {
+                let startId = draggingBlock.id.replace('block-', '')
+                let endId = temp.parentElement.id.replace('block-', '')
 
-            Object.keys(connections)
-                .filter(key => {
-                    return key.split(':')[0] == startId
-                })
-                .forEach(key => {
-                    remConnection(startId, key.split(':')[1])
-                })
-            addConnection(startId, endId)
-            // connection bugs:
-            // -conditions
-            // -end
-            // -self connection
+                Object.keys(connections)
+                    .filter(key => {
+                        return key.split(':')[0] == startId
+                    })
+                    .forEach(key => {
+                        remConnection(startId, key.split(':')[1])
+                    })
+                addConnection(startId, endId)
+                // connection bugs:
+                // -conditions
+                // -start/end
+                // -self connection ✅
+                // -mobile ✅
+            }
         }
 
         line.remove()
