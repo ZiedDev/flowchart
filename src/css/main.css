@@ -97,6 +97,7 @@
 .block-container {
     width: fit-content;
     height: fit-content;
+    transition: outline 100ms ease-in-out;
 }
 
 .flowchart-block {
@@ -175,11 +176,6 @@
     position: absolute;
 }
 
-@keyframes flash_outline {
-    0%,100% {
-        outline: none;
-    }
-    50% {
-        outline: 5px solid #1c98d2;
-    }
+.outline {
+    outline: 5px solid #1c98d2 !important;
 }

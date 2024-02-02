@@ -39,6 +39,7 @@ const allowedFunctions = [
     'Math.pow', 'Math.random', 'Math.round', 'Math.sin', 'Math.sqrt', 'Math.tan',
     'DIV', 'MOD', 'INT',
 ];
+const timeout = 1000;
 // Globals
 
 const operationPattern = Object.keys(operations).map(escapeRegExp).join('|');
@@ -67,15 +68,21 @@ function escapeRegExp(str) {
     return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
+function onNodeStart(id) {
+    document.getElementById('block-' + id).classList.add('outline');
+}
+function onNodeEnd(id) {
+    document.getElementById('block-' + id).classList.remove('outline');
+}
+
 // ASSUME start is at id 0 ----> runNode(chart_json, "0") to start the run
 function runNode(chart, id, vars = {}) {
     let type = chart['nodes'][id]['type'];
     let content = chart['nodes'][id]['content'];
     let connection = chart['wires'][id];
 
-    // OBJECT CSS
     console.log(content, vars);
-    document.getElementById('block-' + id).style.animation = 'flash_outline 1s ease-in-out'
+    onNodeStart(id);
 
     if (type == 'decision') {
         Object.keys(conditions).forEach((condition) => {
@@ -89,9 +96,9 @@ function runNode(chart, id, vars = {}) {
 
         let truthy = safeEval(content);
         if (truthy) {
-            runNode(chart, connection[0], vars);
+            setTimeout(() => { runNode(chart, connection[0], vars); onNodeEnd(id); }, timeout);
         } else {
-            runNode(chart, connection[1], vars);
+            setTimeout(() => { runNode(chart, connection[1], vars); onNodeEnd(id); }, timeout)
         }
     } else if (type != 'terminal') {
         if (type == 'process') {
@@ -135,11 +142,11 @@ function runNode(chart, id, vars = {}) {
                 alert(evaluatedValues.join(' '));
             }
         }
-        runNode(chart, connection, vars);
+        setTimeout(() => { runNode(chart, connection, vars); onNodeEnd(id); }, timeout)
     } else {
         if (content == 'start') {
             // START
-            runNode(chart, connection, vars);
+            setTimeout(() => { runNode(chart, connection, vars); onNodeEnd(id); }, timeout)
         } else {
             // END
         }
