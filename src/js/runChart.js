@@ -69,10 +69,18 @@ function escapeRegExp(str) {
 }
 
 function onNodeStart(id) {
-    document.getElementById('block-' + id).classList.add('outline');
+    document.getElementById('block-' + id).childNodes[1].classList.add('outline');
 }
 function onNodeEnd(id) {
-    document.getElementById('block-' + id).classList.remove('outline');
+    document.getElementById('block-' + id).childNodes[1].classList.remove('outline');
+}
+
+function onChartFinish() {
+    document.getElementById('run-button').disabled = false
+    document.getElementById('run-button').classList.remove('running-button')
+
+    document.getElementById('play-icon').classList.remove('hide')
+    document.getElementById('pause-icon').classList.add('hide')
 }
 
 // ASSUME start is at id 0 ----> runNode(chart_json, "0") to start the run
@@ -81,7 +89,7 @@ function runNode(chart, id, vars = {}) {
     let content = chart['nodes'][id]['content'];
     let connection = chart['wires'][id];
 
-    console.log(content, vars);
+    console.log(content + ',', 'variables: ', JSON.parse(JSON.stringify(vars)));
     onNodeStart(id);
 
     if (type == 'decision') {
@@ -149,6 +157,7 @@ function runNode(chart, id, vars = {}) {
             setTimeout(() => { runNode(chart, connection, vars); onNodeEnd(id); }, timeout)
         } else {
             // END
+            setTimeout(() => { onNodeEnd(id); onChartFinish(); }, timeout)
         }
     }
 }

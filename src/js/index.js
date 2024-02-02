@@ -21,8 +21,14 @@ const inputOutputTemplate = document.getElementById('input-output-template')
 const flowchartSymbols = ['terminal', 'process', 'decision', 'inputOutput']
 const allTools = ['hand', 'edit', 'connect', 'erase']
 
+// test button
+document.getElementById('test-button').addEventListener('click', () => {
+    // test button code here
+    console.log('test');
+})
+
 // flowBlock
-function createLine(start, end, label = undefined, lineColor = undefined) {
+function createLine(start, end, label = undefined, lineColor = undefined, dashed = false) {
     const labelObj = {
         text: label,
         color: 'aliceblue',
@@ -36,6 +42,7 @@ function createLine(start, end, label = undefined, lineColor = undefined) {
             color: lineColor == undefined ? '#f0f8ff' : lineColor, path: 'fluid',
             dropShadow: true,
             middleLabel: LeaderLine.captionLabel(labelObj),
+            dash: dashed ? { animation: dashed } : false
         })
 }
 class FlowBlock {
@@ -85,11 +92,9 @@ class FlowBlock {
 
         document.getElementById(`block-${this.id}`).addEventListener('click', () => {
             if (currentTool == 'erase') {
-                remFlowBlock(this.id)
-            } else if (this.type == 'terminal' && this.content == 'start') {
-                let x = objectifyChart()
-                personifyChart(x)
-                runNode(x, '0')
+                if (this.type != 'terminal') {
+                    remFlowBlock(this.id)
+                }
             }
         })
 
@@ -233,6 +238,7 @@ const editButton = document.getElementById('edit-button')
 const connectButton = document.getElementById('connect-button')
 const moveButton = document.getElementById('move-button')
 const eraseButton = document.getElementById('erase-button')
+const runButton = document.getElementById('run-button')
 
 editButton.addEventListener('click', () => {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 0, 'active', () => {
@@ -273,6 +279,17 @@ eraseButton.addEventListener('click', () => {
             element.classList.remove('active')
         })
     })
+})
+runButton.addEventListener('click', () => {
+    if (runButton.disabled == true) return
+
+    runButton.disabled = true
+    runButton.classList.add('running-button')
+
+    document.getElementById('play-icon').classList.add('hide')
+    document.getElementById('pause-icon').classList.remove('hide')
+
+    runNode(objectifyChart(), '0')
 })
 
 function toggleSwitch(toggleSwitches = [], index, activeClass, onActivateFunc = () => { }) {
@@ -325,12 +342,6 @@ function enableEdit(enable) {
 //#endregion
 
 //#region side Panel 
-document.getElementById('start').addEventListener('click', () => {
-    initAddBlock('terminal', 'start')
-})
-document.getElementById('end').addEventListener('click', () => {
-    initAddBlock('terminal', 'end')
-})
 document.getElementById('process').addEventListener('click', () => {
     initAddBlock('process', 'process')
 })
@@ -378,6 +389,7 @@ function initAddBlock(flowChartSymbol, content) {
 let isDraggingBlock = false
 let draggingBlock
 let line
+let decisionLine
 
 // connections tool
 const pointerTracker = new PointerTracker(flowchartBoard, {
@@ -390,7 +402,21 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
             isDraggingBlock = true
 
             document.getElementById('tracker').style.transform = `translate(${pointer.clientX}px,calc(${pointer.clientY}px - 5rem))`
-            line = createLine(draggingBlock.id, 'tracker')
+            line = createLine(draggingBlock.id, 'tracker', undefined, undefined, true)
+            decisionLine = undefined
+
+            return true
+        } else if (temp.getAttribute('data-flowchart-block-dragging') == 'yes') {
+            draggingBlock = temp.parentElement.parentElement.parentElement // .greatGrandParent()
+            line = createLine(draggingBlock.id, 'tracker', 'Yes', '#29964a', true)
+            decisionLine = 'y'
+
+            return true
+        } else if (temp.getAttribute('data-flowchart-block-dragging') == 'no') {
+            draggingBlock = temp.parentElement.parentElement.parentElement // .greatGrandParent()
+            line = createLine(draggingBlock.id, 'tracker', 'No', '#ba2b2b', true)
+            decisionLine = 'n'
+
             return true
         }
     },
@@ -416,9 +442,15 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
                             return key.split(':')[0] == startId
                         })
                         .forEach(key => {
-                            remConnection(startId, key.split(':')[1])
+                            if (key in connectionAttrs) {
+                                if (connectionAttrs[key] == decisionLine) {
+                                    remConnection(startId, key.split(':')[1])
+                                }
+                            } else {
+                                remConnection(startId, key.split(':')[1])
+                            }
                         })
-                    addConnection(startId, endId)
+                    addConnection(startId, endId, decisionLine)
                 }
 
             }
@@ -450,9 +482,9 @@ let x = objectifyChart()
 personifyChart(x)
 //console.log(connections, flowBlocks)
 
-// manually connect decision ❌
+// manually connect decision ✅
 // label orientation ✅
 // flowBlock shapes ✅
 // initial drag state on current tool ✅
 // fix edit block behavior ❌
-// remove start from options?? ❌
+// remove start from options?? ✅
