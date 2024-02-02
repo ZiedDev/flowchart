@@ -1,3 +1,63 @@
+:root {
+    --shadow-color: 0deg 0% 0%;
+    --shadow-down-low:
+        0px 0.5px 0.6px hsl(var(--shadow-color) / 0.1),
+        0px 0.8px 0.9px -1.2px hsl(var(--shadow-color) / 0.1),
+        0px 2px 2.3px -2.5px hsl(var(--shadow-color) / 0.1);
+    --shadow-down-medium:
+        0px 0.5px 0.6px hsl(var(--shadow-color) / 0.11),
+        0px 1.6px 1.8px -0.8px hsl(var(--shadow-color) / 0.11),
+        0px 4.1px 4.6px -1.7px hsl(var(--shadow-color) / 0.11),
+        0px 9.9px 11.1px -2.5px hsl(var(--shadow-color) / 0.11);
+    --shadow-down-high:
+        0px 0.5px 0.6px hsl(var(--shadow-color) / 0.1),
+        0px 2.9px 3.3px -0.4px hsl(var(--shadow-color) / 0.1),
+        0px 5.4px 6.1px -0.7px hsl(var(--shadow-color) / 0.1),
+        0px 8.9px 10px -1.1px hsl(var(--shadow-color) / 0.1),
+        -0.1px 14.2px 16px -1.4px hsl(var(--shadow-color) / 0.1),
+        -0.1px 22.1px 24.9px -1.8px hsl(var(--shadow-color) / 0.1),
+        -0.1px 33.6px 37.8px -2.1px hsl(var(--shadow-color) / 0.1),
+        -0.2px 49.5px 55.7px -2.5px hsl(var(--shadow-color) / 0.1);
+
+    --shadow-up-low:
+        0px -0.5px 0.6px hsl(var(--shadow-color) / 0.1),
+        0px -0.8px 0.9px -1.2px hsl(var(--shadow-color) / 0.1),
+        0px -2px 2.3px -2.5px hsl(var(--shadow-color) / 0.1);
+    --shadow-up-medium:
+        0px -0.5px 0.6px hsl(var(--shadow-color) / 0.11),
+        0px -1.6px 1.8px -0.8px hsl(var(--shadow-color) / 0.11),
+        0px -4.1px 4.6px -1.7px hsl(var(--shadow-color) / 0.11),
+        -0.1px -10px 11.3px -2.5px hsl(var(--shadow-color) / 0.11);
+    --shadow-up-high:
+        0px -0.5px 0.6px hsl(var(--shadow-color) / 0.1),
+        0px -2.9px 3.3px -0.4px hsl(var(--shadow-color) / 0.1),
+        0px -5.4px 6.1px -0.7px hsl(var(--shadow-color) / 0.1),
+        -0.1px -8.9px 10px -1.1px hsl(var(--shadow-color) / 0.1),
+        -0.1px -14.2px 16px -1.4px hsl(var(--shadow-color) / 0.1),
+        -0.2px -22.2px 25px -1.8px hsl(var(--shadow-color) / 0.1),
+        -0.2px -33.8px 38px -2.1px hsl(var(--shadow-color) / 0.1),
+        -0.4px -49.8px 56px -2.5px hsl(var(--shadow-color) / 0.1);
+
+    --shadow-right-low:
+        0.5px 0px 0.6px hsl(var(--shadow-color) / 0.1),
+        0.8px 0px 0.9px -1.2px hsl(var(--shadow-color) / 0.1),
+        2px 0px 2.3px -2.5px hsl(var(--shadow-color) / 0.1);
+    --shadow-right-medium:
+        0.5px 0px 0.6px hsl(var(--shadow-color) / 0.11),
+        1.6px 0px 1.8px -0.8px hsl(var(--shadow-color) / 0.11),
+        4.1px 0.1px 4.6px -1.7px hsl(var(--shadow-color) / 0.11),
+        9.9px 0.1px 11.1px -2.5px hsl(var(--shadow-color) / 0.11);
+    --shadow-right-high:
+        0.5px 0px 0.6px hsl(var(--shadow-color) / 0.1),
+        2.9px 0px 3.3px -0.4px hsl(var(--shadow-color) / 0.1),
+        5.4px 0.1px 6.1px -0.7px hsl(var(--shadow-color) / 0.1),
+        8.8px 0.1px 9.9px -1.1px hsl(var(--shadow-color) / 0.1),
+        14.1px 0.2px 15.9px -1.4px hsl(var(--shadow-color) / 0.1),
+        22.1px 0.3px 24.9px -1.8px hsl(var(--shadow-color) / 0.1),
+        33.6px 0.5px 37.8px -2.1px hsl(var(--shadow-color) / 0.1),
+        49.4px 0.7px 55.6px -2.5px hsl(var(--shadow-color) / 0.1);
+}
+
 html,
 body {
     margin: 0;
@@ -38,9 +98,44 @@ body *::-webkit-scrollbar-thumb {
 .title {
     display: flex;
     align-items: center;
+    justify-content: space-around;
+
+    width: 100%;
     height: 5rem;
     background-color: #010409;
     border-bottom: #21262D solid 0.5pt;
+
+    box-shadow: var(--shadow-down-high);
+}
+
+.title h1 {
+    width: 60%;
+    padding-left: 5%;
+    display: flex;
+}
+
+.title h2 {
+    width: 30%;
+    padding-right: 5%;
+    display: flex;
+    justify-content: end;
+}
+
+.title h2 a {
+    color: aliceblue;
+}
+
+.title h2 a:hover {
+    text-decoration: 2pt aliceblue underline;
+}
+
+a {
+    text-decoration: none;
+    color: #76a6d0;
+}
+
+a:hover {
+    text-decoration: 2pt #93b8d9 underline;
 }
 
 .hide {

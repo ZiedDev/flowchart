@@ -8,14 +8,16 @@
 }
 
 .add-blocks-panel-container {
-    background-color: #010409;
-    border-right: #21262D solid 0.5pt;
     overflow: hidden;
+    background-color: #010409;
+
+    border-right: #21262D solid 0.5pt;
+    box-shadow: var(--shadow-right-high);
 }
 
 .add-blocks-panel {
     height: calc(100% - 3rem);
-    padding: 1rem 0;
+    padding: 1.5rem;
 
     display: flex;
     flex-direction: column;
@@ -112,6 +114,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    box-shadow: var(--shadow-down-medium);
 }
 
 .flowchart-block input {
