@@ -22,9 +22,20 @@ const allTools = ['hand', 'edit', 'connect', 'erase']
 
 // flowBlock
 function createLine(start, end, label = undefined, lineColor = undefined) {
-    const labelObj = { text: label, color: 'aliceblue', outlineColor: '' }
+    const labelObj = {
+        text: label,
+        color: 'aliceblue',
+        outlineColor: '',
+        fontWeight: 'bold',
+    }
     return new LeaderLine(document.getElementById(start), document.getElementById(end),
-        { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: lineColor == undefined ? '#f0f8ff' : lineColor, path: 'fluid', dropShadow: true, middleLabel: LeaderLine.pathLabel(labelObj) })
+        {
+            startPlug: 'disc',
+            size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5,
+            color: lineColor == undefined ? '#f0f8ff' : lineColor, path: 'fluid',
+            dropShadow: true,
+            middleLabel: LeaderLine.captionLabel(labelObj),
+        })
 }
 class FlowBlock {
     constructor(id, type, content, pos) {
@@ -141,9 +152,9 @@ function addConnection(fromId, toId, attr = null) {
 
     if (attr) connectionAttrs[cid] = attr
     if (attr == 'y') {
-        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'yes', '#29964a')
+        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'Yes', '#29964a')
     } else if (attr == 'n') {
-        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'no', '#ba2b2b')
+        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'No', '#ba2b2b')
     } else {
         connections[cid] = createLine(`block-${fromId}`, `block-${toId}`)
     }
@@ -371,11 +382,11 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
 })
 
 //HARD R CODED
-addFlowBlock('terminal', 'start', [0, 0])
+addFlowBlock('terminal', 'start', [500, 0])
 addFlowBlock('inputOutput', 'input X', [100, 100])
-addFlowBlock('decision', 'X > 5', [200, 300])
-addFlowBlock('inputOutput', 'output X', [200, 350])
-addFlowBlock('terminal', 'end', [500, 300])
+addFlowBlock('decision', 'X > 5', [500, 200])
+addFlowBlock('inputOutput', 'output X', [800, 400])
+addFlowBlock('terminal', 'end', [500, 400])
 
 addConnection(0, 1)
 addConnection(1, 2)
@@ -390,4 +401,6 @@ personalifyChart(x)
 //console.log(connections, flowBlocks)
 
 // manualy connect decision ❌
-// label orientation ❌
+// label orientation ✅
+// floblock shapes ❌
+// initial drag state on current tool ❌
