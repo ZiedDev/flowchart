@@ -6,6 +6,7 @@ import '../css/index.css'
 import '../css/main.css'
 import '../css/mainMobile.css';
 
+import { runNode } from './runChart'
 import flowchart from '../json/flowchart.json'
 
 const flowchartBoard = document.getElementById('flowchart-board')
@@ -85,6 +86,10 @@ class FlowBlock {
         document.getElementById(`block-${this.id}`).addEventListener('click', () => {
             if (currentTool == 'erase') {
                 remFlowBlock(this.id)
+            } else if (this.type == 'terminal' && this.content == 'start') {
+                let x = objectifyChart()
+                personifyChart(x)
+                runNode(x, '0')
             }
         })
 
@@ -450,3 +455,4 @@ personifyChart(x)
 // flowBlock shapes ✅
 // initial drag state on current tool ✅
 // fix edit block behavior ❌
+// remove start from options?? ❌

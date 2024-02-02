@@ -75,6 +75,7 @@ function runNode(chart, id, vars = {}) {
 
     // OBJECT CSS
     console.log(content, vars);
+    document.getElementById('block-' + id).style.animation = 'flash_outline 1s ease-in-out'
 
     if (type == 'decision') {
         Object.keys(conditions).forEach((condition) => {
@@ -138,8 +139,11 @@ function runNode(chart, id, vars = {}) {
     } else {
         if (content == 'start') {
             // START
+            runNode(chart, connection, vars);
         } else {
             // END
         }
     }
 }
+
+export { runNode }

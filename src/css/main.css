@@ -174,3 +174,12 @@
 .draggable {
     position: absolute;
 }
+
+@keyframes flash_outline {
+    0%,100% {
+        outline: none;
+    }
+    50% {
+        outline: 5px solid #1c98d2;
+    }
+}
