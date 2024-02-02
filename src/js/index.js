@@ -203,7 +203,7 @@ function objectifyChart() {
     })
     return res
 }
-function personalifyChart(object) {
+function personifyChart(object) {
     let n = Object.keys(flowBlocks).length
     for (let i = 0; i < n; i++) remFlowBlock(0)
 
@@ -222,7 +222,7 @@ function personalifyChart(object) {
     })
 }
 
-// tools
+//#region tools
 let currentTool
 const editButton = document.getElementById('edit-button')
 const connectButton = document.getElementById('connect-button')
@@ -317,13 +317,58 @@ function enableEdit(enable) {
     }
 }
 
-// side Panel
-document.getElementById('start').addEventListener('click', () => addFlowBlock('terminal', 'start', [0, 0]))
-document.getElementById('end').addEventListener('click', () => addFlowBlock('terminal', 'end', [0, 0]))
-document.getElementById('process').addEventListener('click', () => addFlowBlock('terminal', 'process', [0, 0]))
-document.getElementById('decision').addEventListener('click', () => addFlowBlock('terminal', 'decision', [0, 0]))
-document.getElementById('input').addEventListener('click', () => addFlowBlock('terminal', 'input', [0, 0]))
-document.getElementById('output').addEventListener('click', () => addFlowBlock('terminal', 'output', [0, 0]))
+//#endregion
+
+//#region side Panel 
+document.getElementById('start').addEventListener('click', () => {
+    initAddBlock('terminal', 'start')
+})
+document.getElementById('end').addEventListener('click', () => {
+    initAddBlock('terminal', 'end')
+})
+document.getElementById('process').addEventListener('click', () => {
+    initAddBlock('process', 'process')
+})
+document.getElementById('decision').addEventListener('click', () => {
+    initAddBlock('decision', 'decision')
+})
+document.getElementById('input').addEventListener('click', () => {
+    initAddBlock('inputOutput', 'input')
+})
+document.getElementById('output').addEventListener('click', () => {
+    initAddBlock('inputOutput', 'output')
+})
+
+function initAddBlock(flowChartSymbol, content) {
+    addFlowBlock(flowChartSymbol, content, [0, 0])
+
+    if (currentTool == 'hand') {
+        toggleDraggables(true)
+        enableEdit(false)
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.add('active')
+        })
+    } else if (currentTool == 'edit') {
+        toggleDraggables(false)
+        enableEdit(true)
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.remove('active')
+        })
+    } else if (currentTool == 'connect') {
+        toggleDraggables(false)
+        enableEdit(false)
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.add('active')
+        })
+    } else if (currentTool == 'erase') {
+        toggleDraggables(false)
+        enableEdit(false)
+        document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
+            element.classList.add('active')
+        })
+    }
+}
+//#endregion
 
 let isDraggingBlock = false
 let draggingBlock
@@ -397,10 +442,11 @@ addConnection(3, 4)
 //remFlowBlock(2)
 let x = objectifyChart()
 //console.log(x)
-personalifyChart(x)
+personifyChart(x)
 //console.log(connections, flowBlocks)
 
-// manualy connect decision ❌
+// manually connect decision ❌
 // label orientation ✅
-// floblock shapes ❌
-// initial drag state on current tool ❌
+// flowBlock shapes ✅
+// initial drag state on current tool ✅
+// fix edit block behavior ❌
