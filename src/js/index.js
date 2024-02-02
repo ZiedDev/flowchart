@@ -24,7 +24,7 @@ const allTools = ['hand', 'edit', 'connect', 'erase']
 function createLine(start, end, label = undefined, lineColor = undefined) {
     const labelObj = { text: label, color: 'aliceblue', outlineColor: '' }
     return new LeaderLine(document.getElementById(start), document.getElementById(end),
-        { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: lineColor == undefined ? '#f0f8ff' : lineColor, path: 'fluid', dropShadow: true, middleLabel: LeaderLine.pathLabel(labelObj) }) // 
+        { startPlug: 'disc', size: 4, startPlugSize: 1.5, startPlugOutlineSize: 2.5, color: lineColor == undefined ? '#f0f8ff' : lineColor, path: 'fluid', dropShadow: true, middleLabel: LeaderLine.pathLabel(labelObj) })
 }
 class FlowBlock {
     constructor(id, type, content, pos) {
@@ -96,7 +96,6 @@ function addFlowBlock(type, content, pos = [0, 0]) {
     flowBlocks[String(global_index + 1)] = newBlock
     global_index++
 }
-//CHANGE
 function remFlowBlock(id) {
     // remove attached connections to flowblock
     let currConnections =
@@ -135,24 +134,22 @@ function remFlowBlock(id) {
     global_index--
 }
 
-//CHANGE
 function addConnection(fromId, toId, attr = null) {
-    let cid = `${fromId}:${toId}` // shimi shimi shimyay shimyay shimyaa (drugz) swallalala
+    let cid = `${fromId}:${toId}`
     let startNode = flowBlocks[fromId]
     let endNode = flowBlocks[toId]
 
     if (attr) connectionAttrs[cid] = attr
     if (attr == 'y') {
-        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'yuh uh', '#00ff00')
+        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'yes', '#29964a')
     } else if (attr == 'n') {
-        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'nuh uh', '#ff0000')
+        connections[cid] = createLine(`block-${fromId}`, `block-${toId}`, 'no', '#ba2b2b')
     } else {
         connections[cid] = createLine(`block-${fromId}`, `block-${toId}`)
     }
     startNode.connections.push(connections[cid])
     endNode.connections.push(connections[cid])
 }
-//CHANGE
 function remConnection(fromId, toId) {
     let cid = `${fromId}:${toId}`
 
@@ -165,7 +162,6 @@ function remConnection(fromId, toId) {
     delete connectionAttrs[cid]
 }
 
-//CHANGE
 function objectifyChart() {
     let res = { 'wires': {}, 'nodes': {} }
     // add nodes
@@ -206,11 +202,11 @@ function personalifyChart(object) {
             [object['nodes'][key]['posx'], object['nodes'][key]['posy']])
     })
     Object.keys(object['wires']).forEach(key => {
-        if (typeof(object['wires'][key]) == 'string') {
+        if (typeof (object['wires'][key]) == 'string') {
             addConnection(key, object['wires'][key])
         } else {
-            addConnection(key, object['wires'][key][0],'y')
-            addConnection(key, object['wires'][key][1],'n')
+            addConnection(key, object['wires'][key][0], 'y')
+            addConnection(key, object['wires'][key][1], 'n')
         }
     })
 }
@@ -323,7 +319,6 @@ let draggingBlock
 let line
 
 // connections tool
-//CHANGE
 const pointerTracker = new PointerTracker(flowchartBoard, {
     start(pointer, event) {
         if (currentTool != 'connect') return false
@@ -365,14 +360,6 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
                     addConnection(startId, endId)
                 }
 
-                // connection bugs:
-                // -conditions ✅ 
-                // -start/end ✅
-                // -self connection ✅
-                // -mobile ✅
-                // MANUAL CONNECT ❌
-                // orientation label ❌
-                // colors and label text ❌
             }
         }
 
@@ -400,4 +387,7 @@ addConnection(3, 4)
 let x = objectifyChart()
 //console.log(x)
 personalifyChart(x)
-console.log(connections, flowBlocks)
+//console.log(connections, flowBlocks)
+
+// manualy connect decision ❌
+// label orientation ❌
