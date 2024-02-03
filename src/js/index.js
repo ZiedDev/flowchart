@@ -82,6 +82,7 @@ class FlowBlock {
         const elementId = element.querySelector('[data-flowchart-block-id]')
         const elementContent = element.querySelector('[data-flowchart-block-content]')
         const elementEdit = element.querySelector('[data-flowchart-block-edit]')
+        const elementEditLabel = element.querySelector('[data-flowchart-block-input-output-label]')
 
         elementId.id = `block-${this.id}`
         elementContent.textContent = this.content
@@ -89,9 +90,23 @@ class FlowBlock {
         elementId.classList.add('draggable')
         elementId.style.transform = `translate(${this.posx}px,${this.posy}px)`
         if (elementEdit != undefined) {
-            elementEdit.value = this.content
-            elementEdit.oninput = () => {
-                elementContent.textContent = elementEdit.value
+            if (elementEditLabel != undefined) {
+                elementContent.textContent = this.content.split(' ').slice(1).join(' ')
+
+                elementEditLabel.textContent = this.content.split(' ')[0]
+                elementEdit.value = this.content.split(' ').slice(1).join(' ')
+                elementEdit.oninput = () => {
+                    this.content = this.content.split(' ')[0] + ' ' + elementEdit.value
+                    elementContent.textContent = elementEdit.value
+                }
+            } else {
+                elementContent.textContent = this.content
+
+                elementEdit.value = this.content
+                elementEdit.oninput = () => {
+                    this.content = elementEdit.value
+                    elementContent.textContent = elementEdit.value
+                }
             }
         }
 
@@ -406,6 +421,8 @@ let decisionLine
 const pointerTracker = new PointerTracker(flowchartBoard, {
     start(pointer, event) {
         if (currentTool != 'connect') return false
+        document.getElementById('tracker').style.transform = `translate(${pointer.clientX}px,calc(${pointer.clientY}px - 5rem))`
+
         let temp = event.target
 
         if (temp.classList.contains('flowchart-block')) {
@@ -440,19 +457,29 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
     end(pointer, event, cancelled) {
         let temp = document.elementFromPoint(pointer.clientX, pointer.clientY)
 
+        temp = temp.parentElement.id != '' ? temp : temp.parentElement.parentElement
+
         if (draggingBlock != temp.parentElement) {
             if (temp.classList.contains('flowchart-block')) {
                 let startId = draggingBlock.id.replace('block-', '')
                 let endId = temp.parentElement.id.replace('block-', '')
 
+                console.log(endId);
+
                 if ((flowBlocks[startId].type == 'terminal' && flowBlocks[startId].content == 'end') || (flowBlocks[endId].type == 'terminal' && flowBlocks[endId].content == 'start')) {
 
                 } else {
+                    let isConnectionExisting = false
+
                     Object.keys(connections)
                         .filter(key => {
                             return key.split(':')[0] == startId
                         })
                         .forEach(key => {
+                            if (key.split(':')[1] == endId) {
+                                isConnectionExisting = true
+                            }
+
                             if (key in connectionAttrs) {
                                 if (connectionAttrs[key] == decisionLine) {
                                     remConnection(startId, key.split(':')[1])
@@ -461,7 +488,9 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
                                 remConnection(startId, key.split(':')[1])
                             }
                         })
-                    addConnection(startId, endId, decisionLine)
+                    if (!isConnectionExisting) {
+                        addConnection(startId, endId, decisionLine)
+                    }
                 }
 
             }
@@ -482,11 +511,3 @@ flowchartBoardContainer.addEventListener('scroll', () => {
 
 // load the default flowchart json
 personifyChart(flowchartJson)
-
-// manually connect decision ✅
-// label orientation ✅
-// flowBlock shapes ✅
-// initial drag state on current tool ✅
-// fix edit block behavior ❌
-// update FlowBlock position ✅
-// remove start from options?? ✅

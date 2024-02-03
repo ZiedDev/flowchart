@@ -2,7 +2,10 @@
     "wires": {
         "0": "1",
         "1": "2",
-        "2": ["5","3"],
+        "2": [
+            "5",
+            "3"
+        ],
         "3": "4",
         "4": "2",
         "5": "6"
@@ -11,8 +14,8 @@
         "0": {
             "posx": 0,
             "posy": 0,
-            "type": "start",
-            "content": "START"
+            "type": "terminal",
+            "content": "start"
         },
         "1": {
             "posx": 2,
@@ -29,7 +32,7 @@
         "3": {
             "posx": 2,
             "posy": 5,
-            "type": "input",
+            "type": "inputOutput",
             "content": "input m"
         },
         "4": {
@@ -41,14 +44,14 @@
         "5": {
             "posx": 2,
             "posy": 7,
-            "type": "output",
+            "type": "inputOutput",
             "content": "output c,t"
         },
         "6": {
             "posx": 5,
             "posy": 10,
-            "type": "end",
-            "content": "END"
+            "type": "terminal",
+            "content": "end"
         }
     }
 }

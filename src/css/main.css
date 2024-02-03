@@ -78,6 +78,8 @@
 }
 
 .add-blocks-panel-container * {
+    -webkit-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 
@@ -120,7 +122,7 @@
     display: none;
 }
 
-.add-blocks-panel-container .building-mode .active {
+.add-blocks-panel-container .building-mode>.active {
     background-color: #21262D;
 }
 
@@ -169,11 +171,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 0.5rem;
 
     position: relative;
 
     box-shadow: var(--shadow-down-medium);
     transition: outline 100ms ease-in-out;
+
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .posAbs {
@@ -184,7 +191,7 @@
     width: 5rem;
     height: 2rem;
     border-radius: 0.5rem;
-    border: none;
+    border: #0D1117 solid 2pt;
     background-color: transparent;
     font-size: 1.5em;
     font-weight: bold;
@@ -192,6 +199,8 @@
 
 .flowchart-block .active {
     pointer-events: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 
@@ -219,6 +228,10 @@
 
 .input-output * {
     transform: skew(15deg);
+}
+
+[data-flowchart-block-input-output-label] {
+    pointer-events: none;
 }
 
 .yes-no-container {
