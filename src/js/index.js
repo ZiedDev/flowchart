@@ -484,9 +484,9 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
         }
 
         if (draggingBlock != temp && temp != null) {
-            if (temp.classList.contains('flowchart-block')) {
+            if (temp.classList.contains('block-container')) {
                 let startId = draggingBlock.id.replace('block-', '')
-                let endId = temp.parentElement.id.replace('block-', '')
+                let endId = temp.id.replace('block-', '')
 
                 console.log(endId);
 
