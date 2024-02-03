@@ -122,7 +122,13 @@ class FlowBlock {
             }
         })
 
-        elementDraggable.autoScroll = flowchartBoardContainer
+        // allow autoScroll only when a mouse exist
+        if ("ontouchstart" in document.documentElement) {
+
+        }
+        else {
+            elementDraggable.autoScroll = flowchartBoardContainer
+        }
 
         return [element, elementDraggable]
     }
@@ -274,6 +280,9 @@ editButton.addEventListener('click', () => {
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.remove('active')
         })
+        Object.keys(connections).forEach(key => {
+            connections[key].position()
+        });
     })
 })
 connectButton.addEventListener('click', () => {
@@ -284,6 +293,9 @@ connectButton.addEventListener('click', () => {
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.add('active')
         })
+        Object.keys(connections).forEach(key => {
+            connections[key].position()
+        });
     })
 })
 moveButton.addEventListener('click', () => {
@@ -294,6 +306,9 @@ moveButton.addEventListener('click', () => {
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.remove('active')
         })
+        Object.keys(connections).forEach(key => {
+            connections[key].position()
+        });
     })
 })
 eraseButton.addEventListener('click', () => {
@@ -304,6 +319,9 @@ eraseButton.addEventListener('click', () => {
         document.querySelectorAll('[data-flowchart-block-content').forEach(element => {
             element.classList.remove('active')
         })
+        Object.keys(connections).forEach(key => {
+            connections[key].position()
+        });
     })
 })
 runButton.addEventListener('click', () => {
@@ -451,15 +469,21 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
     move(previousPointers, changedPointers, event) {
         let temp = event.target
 
+        flowchartBoardContainer.classList.add('noScroll')
+
         document.getElementById('tracker').style.transform = `translate(${changedPointers[0].clientX}px,calc(${changedPointers[0].clientY}px - 5rem))`
         line.position()
     },
     end(pointer, event, cancelled) {
         let temp = document.elementFromPoint(pointer.clientX, pointer.clientY)
 
-        temp = temp.parentElement.id != '' ? temp : temp.parentElement.parentElement
+        flowchartBoardContainer.classList.remove('noScroll')
 
-        if (draggingBlock != temp.parentElement) {
+        if (temp != null) {
+            temp = temp.parentElement.id != '' ? temp.parentElement : temp.parentElement.parentElement.parentElement
+        }
+
+        if (draggingBlock != temp && temp != null) {
             if (temp.classList.contains('flowchart-block')) {
                 let startId = draggingBlock.id.replace('block-', '')
                 let endId = temp.parentElement.id.replace('block-', '')
