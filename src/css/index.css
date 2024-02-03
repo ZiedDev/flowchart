@@ -81,7 +81,8 @@ body * {
 
 body *::-webkit-scrollbar {
     cursor: grab;
-    width: 0.5rem;
+    width: 0.75rem;
+    height: 0.75rem;
 }
 
 body *::-webkit-scrollbar-track {

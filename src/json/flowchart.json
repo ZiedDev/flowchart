@@ -4,40 +4,40 @@
         "1": "2",
         "2": [
             "3",
-            "1"
+            "4"
         ],
         "3": "4"
     },
     "nodes": {
         "0": {
-            "posx": 0,
+            "posx": 500,
             "posy": 0,
-            "type": "start",
-            "content": "START"
+            "type": "terminal",
+            "content": "start"
         },
         "1": {
-            "posx": 2,
-            "posy": 2,
-            "type": "input",
-            "content": "input x,y"
+            "posx": 100,
+            "posy": 100,
+            "type": "inputOutput",
+            "content": "input X"
         },
         "2": {
-            "posx": 2,
-            "posy": 5,
+            "posx": 500,
+            "posy": 200,
             "type": "decision",
-            "content": "x<>0 AND y>1"
+            "content": "X > 5"
         },
         "3": {
-            "posx": 2,
-            "posy": 7,
-            "type": "output",
-            "content": "print x,'nigga'"
+            "posx": 800,
+            "posy": 400,
+            "type": "inputOutput",
+            "content": "output X"
         },
         "4": {
-            "posx": 5,
-            "posy": 10,
-            "type": "end",
-            "content": "END"
+            "posx": 500,
+            "posy": 400,
+            "type": "terminal",
+            "content": "end"
         }
     }
 }

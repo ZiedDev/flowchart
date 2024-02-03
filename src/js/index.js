@@ -6,10 +6,11 @@ import '../css/index.css'
 import '../css/main.css'
 import '../css/mainMobile.css';
 
-import { runNode } from './runChart'
-import flowchart from '../json/flowchart.json'
+import runNode from './runChart.js'
+import flowchartJson from '../json/flowchart.json'
 
 const flowchartBoard = document.getElementById('flowchart-board')
+const flowchartBoardContainer = document.getElementById('flowchart-board-container')
 
 // templates
 const terminalTemplate = document.getElementById('terminal-template')
@@ -24,7 +25,7 @@ const allTools = ['hand', 'edit', 'connect', 'erase']
 // test button
 document.getElementById('test-button').addEventListener('click', () => {
     // test button code here
-    console.log('test');
+    console.log('test button')
 })
 
 // flowBlock
@@ -42,7 +43,7 @@ function createLine(start, end, label = undefined, lineColor = undefined, dashed
             color: lineColor == undefined ? '#f0f8ff' : lineColor, path: 'fluid',
             dropShadow: true,
             middleLabel: LeaderLine.captionLabel(labelObj),
-            dash: dashed ? { animation: dashed } : false
+            dash: dashed ? { animation: dashed } : false,
         })
 }
 class FlowBlock {
@@ -51,9 +52,17 @@ class FlowBlock {
         this.type = type;
         this.content = content;
         [this.posx, this.posy] = pos;
-        [this.element, this.draggable] = this.createFlowBlock(type, id, content);
+        [this.element, this.draggable] = this.createFlowBlock(type, id, content)
         this.connections = [];
-        this.draggable['onMove'] = () => { this.connections.forEach((c) => { c.position() }) };
+        this.draggable['onMove'] = () => {
+            this.connections.forEach((c) => {
+                c.position()
+            })
+
+            const match = document.getElementById(`block-${this.id}`).style.transform.match(/[-+]?\d+(.\d+)?/g).map(Number)
+            this.posx = match[0]
+            this.posy = match[1]
+        }
     }
 
     createFlowBlock() {
@@ -97,6 +106,8 @@ class FlowBlock {
                 }
             }
         })
+
+        elementDraggable.autoScroll = flowchartBoardContainer
 
         return [element, elementDraggable]
     }
@@ -463,28 +474,19 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
     rawUpdates: false,
 })
 
-//HARD R CODED
-addFlowBlock('terminal', 'start', [500, 0])
-addFlowBlock('inputOutput', 'input X', [100, 100])
-addFlowBlock('decision', 'X > 5', [500, 200])
-addFlowBlock('inputOutput', 'output X', [800, 400])
-addFlowBlock('terminal', 'end', [500, 400])
+flowchartBoardContainer.addEventListener('scroll', () => {
+    Object.keys(connections).forEach(key => {
+        connections[key].position()
+    });
+})
 
-addConnection(0, 1)
-addConnection(1, 2)
-addConnection(2, 3, 'y')
-addConnection(2, 4, 'n')
-addConnection(3, 4)
-
-//remFlowBlock(2)
-let x = objectifyChart()
-//console.log(x)
-personifyChart(x)
-//console.log(connections, flowBlocks)
+// load the default flowchart json
+personifyChart(flowchartJson)
 
 // manually connect decision ✅
 // label orientation ✅
 // flowBlock shapes ✅
 // initial drag state on current tool ✅
 // fix edit block behavior ❌
+// update FlowBlock position ✅
 // remove start from options?? ✅

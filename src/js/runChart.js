@@ -162,4 +162,4 @@ function runNode(chart, id, vars = {}) {
     }
 }
 
-export { runNode }
+export default runNode 

@@ -136,9 +136,16 @@
     border-left: #21262D solid 0.5pt;
 }
 
-.flowchart-board {
-    overflow: hidden;
+.flowchart-board-container {
+    overflow: scroll;
     height: 100%;
+}
+
+.flowchart-board {
+    width: 150rem;
+    height: 150rem;
+
+    position: relative;
 }
 
 .block-container {
@@ -167,6 +174,10 @@
 
     box-shadow: var(--shadow-down-medium);
     transition: outline 100ms ease-in-out;
+}
+
+.posAbs {
+    position: absolute;
 }
 
 .flowchart-block input {
@@ -248,4 +259,8 @@
 .outline {
     outline-offset: 0.25rem;
     outline: 0.35rem solid #1c98d2 !important;
+}
+
+.leader-line {
+    z-index: -1;
 }

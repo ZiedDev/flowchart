@@ -105,11 +105,13 @@
             </div>
         </section>
 
-        <section class="flowchart-board" id="flowchart-board"></section>
+        <section class="flowchart-board-container" id="flowchart-board-container">
+            <div class="flowchart-board" id="flowchart-board"></div>
+        </section>
     </main>
 
     <template id="terminal-template">
-        <div class="block-container" data-flowchart-block-id>
+        <div class="block-container posAbs" data-flowchart-block-id>
             <div class="flowchart-block terminal">
                 <h2 data-flowchart-block-content>content</h2>
             </div>
@@ -117,7 +119,7 @@
     </template>
 
     <template id="process-template">
-        <div class="block-container" data-flowchart-block-id>
+        <div class="block-container posAbs" data-flowchart-block-id>
             <div class="flowchart-block process">
                 <h2 data-flowchart-block-content>content</h2>
                 <input data-flowchart-block-edit class="hide">
@@ -126,7 +128,7 @@
     </template>
 
     <template id="decision-template">
-        <div class="block-container" data-flowchart-block-id>
+        <div class="block-container posAbs" data-flowchart-block-id>
             <div class="flowchart-block decision">
                 <div class="yes-no-container">
                     <div class="no-dragging" data-flowchart-block-dragging="no"></div>
@@ -139,7 +141,7 @@
     </template>
 
     <template id="input-output-template">
-        <div class="block-container" data-flowchart-block-id>
+        <div class="block-container posAbs" data-flowchart-block-id>
             <div class="flowchart-block input-output">
                 <h2 data-flowchart-block-content>content</h2>
                 <input data-flowchart-block-edit class="hide">
