@@ -102,7 +102,12 @@ class FlowBlock {
             } else {
                 elementContent.textContent = this.content
 
-                elementEdit.value = this.content
+                if (this.content == 'process' || this.content == 'decision') {
+                    elementEdit.value = ''
+                } else {
+                    elementEdit.value = this.content
+                }
+
                 elementEdit.oninput = () => {
                     this.content = elementEdit.value
                     elementContent.textContent = elementEdit.value
@@ -284,7 +289,24 @@ const moveButton = document.getElementById('move-button')
 const eraseButton = document.getElementById('erase-button')
 const runButton = document.getElementById('run-button')
 
-editButton.addEventListener('click', () => {
+// tool buttons / keyboard shortcuts
+editButton.addEventListener('click', enableEditing)
+connectButton.addEventListener('click', enableConnecting)
+moveButton.addEventListener('click', enableMoving)
+eraseButton.addEventListener('click', enableErasing)
+document.addEventListener("keydown", (event) => {
+    if (event.key == 'q') {
+        enableMoving()
+    } else if (event.key == 'w') {
+        enableEditing()
+    } else if (event.key == 'e') {
+        enableConnecting()
+    } else if (event.key == 'r') {
+        enableErasing()
+    }
+})
+
+function enableEditing() {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 0, 'active', () => {
         toggleDraggables(false)
         enableEdit(true)
@@ -295,9 +317,13 @@ editButton.addEventListener('click', () => {
         Object.keys(connections).forEach(key => {
             connections[key].position()
         });
+        document.querySelectorAll('.yes-no-container').forEach(key => {
+            key.parentElement.classList.remove('decision-connection')
+        })
     })
-})
-connectButton.addEventListener('click', () => {
+}
+
+function enableConnecting() {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 1, 'active', () => {
         toggleDraggables(false)
         enableEdit(false)
@@ -308,9 +334,14 @@ connectButton.addEventListener('click', () => {
         Object.keys(connections).forEach(key => {
             connections[key].position()
         });
+
+        document.querySelectorAll('.yes-no-container').forEach(key => {
+            key.parentElement.classList.add('decision-connection')
+        })
     })
-})
-moveButton.addEventListener('click', () => {
+}
+
+function enableMoving() {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 2, 'active', () => {
         toggleDraggables(true)
         enableEdit(false)
@@ -321,9 +352,13 @@ moveButton.addEventListener('click', () => {
         Object.keys(connections).forEach(key => {
             connections[key].position()
         });
+        document.querySelectorAll('.yes-no-container').forEach(key => {
+            key.parentElement.classList.remove('decision-connection')
+        })
     })
-})
-eraseButton.addEventListener('click', () => {
+}
+
+function enableErasing() {
     toggleSwitch([editButton, connectButton, moveButton, eraseButton], 3, 'active', () => {
         toggleDraggables(false)
         enableEdit(false)
@@ -334,8 +369,12 @@ eraseButton.addEventListener('click', () => {
         Object.keys(connections).forEach(key => {
             connections[key].position()
         });
+        document.querySelectorAll('.yes-no-container').forEach(key => {
+            key.parentElement.classList.remove('decision-connection')
+        })
     })
-})
+}
+
 runButton.addEventListener('click', () => {
     if (runButton.disabled == true) return
 
@@ -544,4 +583,22 @@ flowchartBoardContainer.addEventListener('scroll', () => {
 })
 
 // load the default flowchart json
-personifyChart(flowchartJson)
+if (localStorage['flowchart'] == undefined) {
+    personifyChart(flowchartJson)
+} else {
+    personifyChart(JSON.parse(localStorage.flowchart))
+}
+
+// save the current flowchart to the LocalStorage
+document.getElementById('save-button').addEventListener('click', () => {
+    localStorage['flowchart'] = JSON.stringify(objectifyChart())
+    alert('Saved the current flowchart in the Local Storage')
+})
+
+// clear the LocalStorage
+document.getElementById('clear-history-button').addEventListener('click', () => {
+    localStorage.clear()
+    alert('Removed the currently saved flowchart. Restored to the default flowchart')
+
+    personifyChart(flowchartJson)
+})

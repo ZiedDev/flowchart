@@ -26,6 +26,10 @@
     display: flex;
 }
 
+.title>.title-mobile {
+    display: none;
+}
+
 .title h2 {
     width: 40%;
     padding-right: 5%;
@@ -41,8 +45,10 @@
     text-decoration: 2pt aliceblue underline;
 }
 
-.run-button {
-    width: 10%;
+.run-button,
+.save-button,
+.clear-history-button {
+    width: max(5%, 4rem);
     height: 100%;
     background-color: transparent;
     border: none;
@@ -221,6 +227,10 @@
     transform: rotate(45deg) scale(75%);
 
     aspect-ratio: 1/1;
+}
+
+.decision-connection {
+    box-shadow: -0.30rem 0.30rem 1rem #ba2b2b, 0.30rem -0.30rem 1rem #29964a;
 }
 
 .decision * {
