@@ -163,7 +163,7 @@ function remFlowBlock(id) {
     document.getElementById(`block-${id}`).remove()
     delete flowBlocks[String(id)]
 
-    // decrement ids
+    // decrement flowblock ids
     let gids = Object.keys(flowBlocks).map(str => Number(str))
         .filter(key => {
             return key > Number(id)
@@ -175,6 +175,7 @@ function remFlowBlock(id) {
     })
     delete flowBlocks[String(Math.max(...gids))]
 
+    // decrement connection ids
     Object.keys(connections).forEach(key => {
         let parts = key.split(':').map(str => Number(str))
         if (parts[0] > Number(id)) parts[0]--
@@ -183,6 +184,17 @@ function remFlowBlock(id) {
         delete connections[key]
         connections[parts.join(':')] = tmp
     })
+
+    // decrement connectionAttrs ids
+    Object.keys(connectionAttrs).forEach(key => {
+        let parts = key.split(':').map(str => Number(str))
+        if (parts[0] > Number(id)) parts[0]--
+        if (parts[1] > Number(id)) parts[1]--
+        let tmp = connectionAttrs[key]
+        delete connectionAttrs[key]
+        connectionAttrs[parts.join(':')] = tmp
+    })
+
 
     global_index--
 }
@@ -487,8 +499,6 @@ const pointerTracker = new PointerTracker(flowchartBoard, {
             if (temp.classList.contains('block-container')) {
                 let startId = draggingBlock.id.replace('block-', '')
                 let endId = temp.id.replace('block-', '')
-
-                console.log(endId);
 
                 if ((flowBlocks[startId].type == 'terminal' && flowBlocks[startId].content == 'end') || (flowBlocks[endId].type == 'terminal' && flowBlocks[endId].content == 'start')) {
 
