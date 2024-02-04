@@ -21,8 +21,8 @@
 }
 
 .title h1 {
-    width: 40%;
-    padding-left: 5%;
+    width: 43%;
+    padding-left: 2%;
     display: flex;
 }
 
@@ -31,8 +31,8 @@
 }
 
 .title h2 {
-    width: 40%;
-    padding-right: 5%;
+    width: 43%;
+    padding-right: 2%;
     display: flex;
     justify-content: end;
 }

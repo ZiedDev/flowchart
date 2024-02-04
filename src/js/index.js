@@ -113,6 +113,14 @@ class FlowBlock {
                     elementContent.textContent = elementEdit.value
                 }
             }
+
+            elementEdit.addEventListener('focusin', () => {
+                elementEdit.classList.add('active-input')
+            })
+
+            elementEdit.addEventListener('focusout', () => {
+                elementEdit.classList.remove('active-input')
+            })
         }
 
         flowchartBoard.appendChild(element)
@@ -289,20 +297,36 @@ const moveButton = document.getElementById('move-button')
 const eraseButton = document.getElementById('erase-button')
 const runButton = document.getElementById('run-button')
 
+let disableShortcuts = false
+
 // tool buttons / keyboard shortcuts
 editButton.addEventListener('click', enableEditing)
 connectButton.addEventListener('click', enableConnecting)
 moveButton.addEventListener('click', enableMoving)
 eraseButton.addEventListener('click', enableErasing)
 document.addEventListener("keydown", (event) => {
+    let isPrevent = false
+
+    document.querySelectorAll('input').forEach(key => {
+        isPrevent += key.classList.contains('active-input')
+    })
+
     if (event.key == 'q') {
-        enableMoving()
+        if (!isPrevent) {
+            enableMoving()
+        }
     } else if (event.key == 'w') {
-        enableEditing()
+        if (!isPrevent) {
+            enableEditing()
+        }
     } else if (event.key == 'e') {
-        enableConnecting()
+        if (!isPrevent) {
+            enableConnecting()
+        }
     } else if (event.key == 'r') {
-        enableErasing()
+        if (!isPrevent) {
+            enableErasing()
+        }
     }
 })
 
