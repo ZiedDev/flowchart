@@ -1,16 +1,17 @@
 const conditions = {
-    '=': '==',
     '<>': '!=',
-    '>': '>',
-    '>=': '>=',
-    '<': '<',
-    '<=': '<=',
     'AND': '&&',
     'OR': '||',
     'NOT': '!',
+    '>=': '>=',
+    '<=': '<=',
+    '>': '>',
+    '<': '<',
+    '=': '==',
 };
 const operations = {
     '<-': (x, y) => { return y },
+    '<=': (x, y) => { return y },
     '+=': (x, y) => { return x + y },
     '-=': (x, y) => { return x - y },
     '*=': (x, y) => { return x * y },
@@ -33,39 +34,41 @@ function MOD(x, y) {
 function INT(x) {
     return Math.floor(x)
 }
-const allowedFunctions = [
-    'Math.abs', 'Math.acos', 'Math.asin', 'Math.atan', 'Math.atan2', 'Math.ceil',
-    'Math.cos', 'Math.exp', 'Math.floor', 'Math.log', 'Math.max', 'Math.min',
-    'Math.pow', 'Math.random', 'Math.round', 'Math.sin', 'Math.sqrt', 'Math.tan',
-    'DIV', 'MOD', 'INT',
-];
+const allowedFunctions = {
+    abs: Math.abs, acos: Math.acos, asin: Math.asin, atan: Math.atan,
+    atan2: Math.atan2, ceil: Math.ceil, cos: Math.cos, exp: Math.exp,
+    floor: Math.floor, log: Math.log, max: Math.max, min: Math.min,
+    pow: Math.pow, random: Math.random, round: Math.round, sin: Math.sin,
+    sqrt: Math.sqrt, tan: Math.tan, DIV, MOD, INT,
+};
 const timeout = 1000;
 // Globals
 
 const operationPattern = Object.keys(operations).map(escapeRegExp).join('|');
 const regexPattern = new RegExp(`([^=<>]+)\\s*(${operationPattern})\\s*([^=<>]+)`);
 
+
 function safeEval(expression) {
-    const allowedFunctionNames = allowedFunctions.map(func => func.split('.')[1] || func);
-    const sanitizedExpression = expression.replace(/([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\(/g, (match, p1) => {
-        if (!allowedFunctionNames.includes(p1)) {
-            return 'function ' + p1 + '() { return 0; }(';
-        }
-        return match;
+    const regex1 = /[a-zA-Z_]\w*(?:\.[a-zA-Z_]\w*)*/g;
+    expression = expression.replace(regex1, (match, offset, input) => {
+        const nextChar = input.charAt(offset + match.length);
+        return nextChar !== '(' ? '0' : match;
     });
+
+    const safeEvalFunction = new Function('Math', 'DIV', 'MOD', 'INT', 'return ' + expression);
+
     try {
-        const result = Function('"use strict"; return (' + sanitizedExpression + ')')();
+        const result = safeEvalFunction(allowedFunctions, DIV, MOD, INT);
         return result;
     } catch (error) {
-        console.error('Error evaluating expression:', error.message);
-        return 0;
+        return null;
     }
 }
 function isQuotedString(str) {
     return str.length > 1 && (str[0] === str[str.length - 1]) && (str[0] === '"' || str[0] === "'");
 }
 function escapeRegExp(str) {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return str.replace(/[.*+?^${}()|[\]\\/]/g, '\\$&');
 }
 
 function onNodeStart(id) {
@@ -74,7 +77,6 @@ function onNodeStart(id) {
 function onNodeEnd(id) {
     document.getElementById('block-' + id).childNodes[1].classList.remove('outline');
 }
-
 function onChartFinish() {
     document.getElementById('run-button').disabled = false
     document.getElementById('run-button').classList.remove('running-button')
@@ -86,49 +88,61 @@ function onChartFinish() {
 // ASSUME start is at id 0 ----> runNode(chart_json, "0") to start the run
 function runNode(chart, id, vars = {}) {
     let type = chart['nodes'][id]['type'];
-    let content = chart['nodes'][id]['content'];
+    let content = chart['nodes'][id]['content'].trim();
     let connection = chart['wires'][id];
 
     console.log(content + ',', 'variables: ', JSON.parse(JSON.stringify(vars)));
     onNodeStart(id);
 
     if (type == 'decision') {
-        Object.keys(conditions).forEach((condition) => {
-            const regex = new RegExp(condition, 'g');
-            content = content.replace(regex, conditions[condition]);
-        });
+        let condarr = Object.keys(conditions);
+        for (let i = 0; i < condarr.length; i++) {
+            content = content.replace(condarr[i], '卐' + i);
+        }
+        for (let i = 0; i < condarr.length; i++) {
+            content = content.replace('卐' + i, conditions[condarr[i]]);
+        }
+
         Object.keys(vars).forEach((variable) => {
             const regex = new RegExp(variable, 'g');
             content = content.replace(regex, vars[variable]);
         });
 
         let truthy = safeEval(content);
+
         if (truthy) {
             setTimeout(() => { runNode(chart, connection[0], vars); onNodeEnd(id); }, timeout);
         } else {
-            setTimeout(() => { runNode(chart, connection[1], vars); onNodeEnd(id); }, timeout)
+            setTimeout(() => { runNode(chart, connection[1], vars); onNodeEnd(id); }, timeout);
         }
     } else if (type != 'terminal') {
         if (type == 'process') {
-            content.split('\n').forEach((line) => {
-                const [, leftOperand, operation, rightOperand] = line.match(regexPattern);
-                let [leftrep, rightrep] = [leftOperand, rightOperand];
-                Object.keys(vars).forEach((variable) => {
-                    const regex = new RegExp(variable, 'g');
-                    leftrep = leftrep.replace(regex, vars[variable]);
-                    rightrep = rightrep.replace(regex, vars[variable]);
-                });
-                if (Object.keys(vars).includes(leftOperand)) {
-                    vars[leftOperand] = operations[operation](safeEval(leftrep), safeEval(rightrep));
-                } else {
-                    vars[leftOperand] = operations[operation](0, safeEval(rightrep));
+            content = content.replace(/,(?![^()]*\))/g, ';')
+            content.split(';').forEach((line) => {
+                line = line.trim();
+                const match = line.match(regexPattern);
+                if (match) {
+                    const [, leftOperand, operation, rightOperand] = match.map(e => e.trim());
+                    let [leftrep, rightrep] = [leftOperand, rightOperand];
+                    Object.keys(vars).forEach((variable) => {
+                        const regex = new RegExp(variable, 'g');
+                        leftrep = leftrep.replace(regex, vars[variable]);
+                        rightrep = rightrep.replace(regex, vars[variable]);
+                    });
+                    if (Object.keys(vars).includes(leftOperand)) {
+                        vars[leftOperand] = operations[operation](safeEval(leftrep), safeEval(rightrep));
+                    } else {
+                        vars[leftOperand] = operations[operation](0, safeEval(rightrep));
+                    }
                 }
             })
         }
         if (type == 'inputOutput') {
             if (content.startsWith('input')) {
                 let varNames = content.replace("input ", "").split(',');
+                varNames = varNames.filter(e => e !== '');
                 for (let i = 0; i < varNames.length; i++) {
+                    varNames[i] = varNames[i].trim()
                     let inputValue = parseFloat(prompt("Enter value for " + varNames[i]));
                     vars[varNames[i]] = inputValue;
                 }
@@ -138,26 +152,28 @@ function runNode(chart, id, vars = {}) {
 
                 for (let i = 0; i < outputs.length; i++) {
                     let varName = outputs[i].trim();
-                    if (vars.hasOwnProperty(varName)) {
-                        evaluatedValues.push(vars[varName]);
+                    if (isQuotedString(varName)) {
+                        varName = varName.substring(1, varName.length - 1);
                     } else {
-                        if (isQuotedString(varName)) {
-                            varName = varName.substring(1, varName.length - 1);
-                        }
-                        evaluatedValues.push(varName);
+                        Object.keys(vars).forEach((variable) => {
+                            const regex = new RegExp(variable, 'g');
+                            varName = varName.replace(regex, vars[variable]);
+                        });
+                        varName = safeEval(varName);
                     }
+                    evaluatedValues.push(varName);
                 }
                 alert(evaluatedValues.join(' '));
             }
         }
-        setTimeout(() => { runNode(chart, connection, vars); onNodeEnd(id); }, timeout)
+        setTimeout(() => { runNode(chart, connection, vars); onNodeEnd(id); }, timeout);
     } else {
         if (content == 'start') {
             // START
-            setTimeout(() => { runNode(chart, connection, vars); onNodeEnd(id); }, timeout)
+            setTimeout(() => { runNode(chart, connection, vars); onNodeEnd(id); }, timeout);
         } else {
             // END
-            setTimeout(() => { onNodeEnd(id); onChartFinish(); }, timeout)
+            setTimeout(() => { onNodeEnd(id); onChartFinish(); }, timeout);
         }
     }
 }
