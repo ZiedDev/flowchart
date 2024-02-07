@@ -26,7 +26,7 @@ When you first load up, you will be presented with this. ![](https://cdn.discord
   - Lets you **connect** FlowChart blocks together or **remove** already made connections
   - In **decision**, dragging in the red region lets you drag the **No** arrow and dragging in the green region lets you drag the **Yes** arrow
 
-    ![connections be connecting fr](https://cdn.discordapp.com/attachments/1064471000932155434/1203769362742382592/Connections_New-ezgif.com-video-to-gif-converter.gif?ex=65d24c95&is=65bfd795&hm=25ba68b7523720dddb422b150eda58eef6d119b71d7f167c3df5797f77edc894&)
+    ![connections be connecting fr]([https://cdn.discordapp.com/attachments/1064471000932155434/1203769362742382592/Connections_New-ezgif.com-video-to-gif-converter.gif?ex=65d24c95&is=65bfd795&hm=25ba68b7523720dddb422b150eda58eef6d119b71d7f167c3df5797f77edc894&](https://cdn.discordapp.com/attachments/1064471000932155434/1204741043052875818/ConnectionsNew-ezgif.com-video-to-gif-converter.gif?ex=65d5d587&is=65c36087&hm=072c87532526a26aafebd41b084223ebe2431de3ffbfc53d0e46c3396f107723&))
    ---
 - **Eraser** <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path fill="currentColor" d="M216 204h-75l86.84-86.84a28 28 0 0 0 0-39.6l-41.41-41.37a28 28 0 0 0-39.6 0L28.19 154.82a28 28 0 0 0 0 39.6l30.06 30.07a12 12 0 0 0 8.49 3.51H216a12 12 0 0 0 0-24M163.8 53.16a4 4 0 0 1 5.66 0l41.38 41.38a4 4 0 0 1 0 5.65L160 151l-47-47ZM71.71 204l-26.55-26.55a4 4 0 0 1 0-5.65L96 121l47 47l-36 36Z"/></svg> (keyboard shortcut: *R*)
   - Lets you **erase** / **remove** a FlowChart block
