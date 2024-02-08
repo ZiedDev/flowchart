@@ -1,9 +1,9 @@
 # Flowist
-**Flowist** is a simple webapp created by [Zied](https://github.com/ZiedDev) & [Sherbo](https://github.com/omar-elsherbiny) that lets you create FlowCharts and run them realtime. We have created this webapp to help all the students understand the basics of writing flowcharts. 
+**Flowist** is a simple webapp created by [Me (Zied)](https://github.com/ZiedDev) & [Sherbo](https://github.com/omar-elsherbiny) that lets you create FlowCharts and run them realtime. We have created this webapp to help all the students understand the basics of writing flowcharts. 
 
 ## How to use?
 ### Page
-When you first load up, you will be presented with this. ![](https://cdn.discordapp.com/attachments/1064471000932155434/1203768065842483230/image.png?ex=65d24b5f&is=65bfd65f&hm=faa7d4f0de20b7263ebf3fa8945ee7e73db034c43ebe58e8b41fef4e30183b92&)
+When you first load up, you will be presented with this. ![](https://cdn.discordapp.com/attachments/1064471000932155434/1203768065842483230/image.png? ex=65d24b5f&is=65bfd65f&hm=faa7d4f0de20b7263ebf3fa8945ee7e73db034c43ebe58e8b41fef4e30183b92&)
  
  ## Tools
  There are 4 tools (*in the current version*) :
@@ -24,7 +24,8 @@ When you first load up, you will be presented with this. ![](https://cdn.discord
 
 - **Connections** <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256"><path fill="currentColor" d="m137 168l11.52-11.51a12 12 0 0 0-17-17L120 151l-15-15l11.52-11.51a12 12 0 0 0-17-17L88 119l-15.51-15.49a12 12 0 0 0-17 17L59 124l-20.46 20.49a36 36 0 0 0 0 50.91l2.55 2.54l-25.58 25.57a12 12 0 0 0 17 17l25.57-25.58l2.54 2.55a36.06 36.06 0 0 0 50.91 0L132 197l3.51 3.52a12 12 0 0 0 17-17Zm-42.46 32.49a12 12 0 0 1-17 0l-22.03-22.06a12 12 0 0 1 0-17L76 141l39 39Zm146-185a12 12 0 0 0-17 0l-25.6 25.6l-2.54-2.55a36.05 36.05 0 0 0-50.91 0L124 59l-3.51-3.52a12 12 0 0 0-17 17l80 80a12 12 0 0 0 17-17L197 132l20.49-20.49a36 36 0 0 0 0-50.91l-2.55-2.54l25.58-25.57a12 12 0 0 0-.03-16.98Zm-40 79L180 115l-39-39l20.49-20.49a12 12 0 0 1 17 0l22.06 22.06a12 12 0 0 1 0 17Z"/></svg> (keyboard shortcut: *E*)
   - Lets you **connect** FlowChart blocks together or **remove** already made connections
-  - In **decision**, dragging in the red region lets you drag the **No** arrow and dragging in the green region lets you drag the **Yes** arrow
+  - In **decision**, dragging in the red region lets you drag the **No** arrow and dragging in the green region lets you drag the **Yes** arrow 
+  - To remove an arrow just reconnect it again and it will be removed 
 
     ![connections be connecting fr](https://cdn.discordapp.com/attachments/1064471000932155434/1204741043052875818/ConnectionsNew-ezgif.com-video-to-gif-converter.gif?ex=65d5d587&is=65c36087&hm=072c87532526a26aafebd41b084223ebe2431de3ffbfc53d0e46c3396f107723&)
    ---
@@ -54,7 +55,7 @@ You can **clear** the currently saved FlowChart using the **clear button** <svg 
 
 ![clear be clearing fr](https://cdn.discordapp.com/attachments/1064471000932155434/1203769362285207634/Clear_local_storage-ezgif.com-video-to-gif-converter.gif?ex=65d24c94&is=65bfd794&hm=bc294111c1a2d8ff189111ca0f85688e05ecd787e0a267dbbe765cd85c0c8fb3&)
 
-## Notation
+# Notation
 Each FlowChart symbol requires to be written in a specific notation to work properly. Here are the required notations for each FlowChart symbol
  - **Vanilla Javascript syntax will work**
  - **Input / Output**
@@ -70,20 +71,16 @@ Each FlowChart symbol requires to be written in a specific notation to work prop
         <tr>
           <td>=</td>
           <td><></td>
+          <td>AND</td>
         </tr>
         <tr>
           <td>></td>
           <td><</td>
+          <td>OR</td>
         </tr>
         <tr>
           <td>>=</td>
           <td><=</td>
-        </tr>
-        <tr>
-          <td>AND</td>
-          <td>OR</td>
-        </tr>
-        <tr>
           <td>NOT</td>
         </tr>
       </table>
@@ -116,10 +113,6 @@ Each FlowChart symbol requires to be written in a specific notation to work prop
         <tr>
           <td>%=</td>
           <td>Sets the variable to Remainder of there division. ie. <code>X %= 2</code> </td>
-        <tr>
-        <tr>
-          <td>**=</td>
-          <td>Sets the variable to its value power the other value. ie. <code>X **= 2</code> </td>
         <tr>
         <tr>
           <td>**=</td>
@@ -197,7 +190,7 @@ Each FlowChart symbol requires to be written in a specific notation to work prop
 		</tr>
 	  </table>
 
-## Contact us?
+# Contact us?
 Best way to reach us is via discord. <br>
 My Discord ID: [ohzied](https://discord.com/users/484808856128585750) <br>
 Sherbo's Discord ID: [sherbo2007](https://discord.com/users/618443479856447500)
