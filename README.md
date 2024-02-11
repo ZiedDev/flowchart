@@ -4,7 +4,7 @@
 ## How to use?
 ### Page
 When you first load up, you will be presented with this. 
-![](https://cdn.discordapp.com/attachments/1064471000932155434/1203768065842483230/image.png? ex=65d24b5f&is=65bfd65f&hm=faa7d4f0de20b7263ebf3fa8945ee7e73db034c43ebe58e8b41fef4e30183b92&)
+![](https://cdn.discordapp.com/attachments/1064471000932155434/1203768065842483230/image.png?ex=65d24b5f&is=65bfd65f&hm=faa7d4f0de20b7263ebf3fa8945ee7e73db034c43ebe58e8b41fef4e30183b92&)
  
  ## Tools
  There are 4 tools (*in the current version*) :
@@ -60,9 +60,10 @@ You can **clear** the currently saved FlowChart using the **clear button** <svg 
 Each FlowChart symbol requires to be written in a specific notation to work properly. Here are the required notations for each FlowChart symbol
  - **Vanilla Javascript syntax will work**
  - **Input / Output**
-    - Variable names should be separated by commas `,` ie. `var1, var2`
+    - Variable names should be separated by commas `,` or semicolons `;` ie. `var1, var2` or `var1; var2`
     - Strings should be wrapped between quotes (double or single) `'string here'` `"or here"`
     - Undefined variables will be treated as 0s
+    - Undefined functions will return nulls
     - Variables are case and space sensitive
 
  - **Decision**
@@ -87,7 +88,7 @@ Each FlowChart symbol requires to be written in a specific notation to work prop
       </table>
 
  - **Process**
-    - Processes can be separated by commas `,` or semi-commas `;`. ie. `X <- 0; Y <- 0`
+    - Processes can be separated by commas `,` or semicolons `;`. ie. `X <- 0; Y <- 0`
 	- All Operations
 
       <table>

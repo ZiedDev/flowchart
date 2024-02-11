@@ -87,11 +87,17 @@ function onChartFinish() {
 
 // ASSUME start is at id 0 ----> runNode(chart_json, "0") to start the run
 function runNode(chart, id, vars = {}) {
+    if (id == -1 || id == undefined) {
+        document.querySelectorAll('.block-container').forEach(e => {e.childNodes[1].classList.remove('outline');})
+        onChartFinish();
+        alert('Invalid Flowchart');
+        return;
+    }
     let type = chart['nodes'][id]['type'];
     let content = chart['nodes'][id]['content'].trim();
     let connection = chart['wires'][id];
 
-    console.log(content + ',', 'variables: ', JSON.parse(JSON.stringify(vars)));
+    console.log(content + ' |', 'variables: ', JSON.parse(JSON.stringify(vars)));
     onNodeStart(id);
 
     if (type == 'decision') {
@@ -147,7 +153,8 @@ function runNode(chart, id, vars = {}) {
                     vars[varNames[i]] = inputValue;
                 }
             } else if (content.startsWith('output') || content.startsWith('print')) {
-                let outputs = content.replace("output ", "").replace("print ", "").split(',');
+                content = content.replace(/,(?![^()]*\))/g, ';')
+                let outputs = content.replace("output ", "").replace("print ", "").split(';');
                 let evaluatedValues = [];
 
                 for (let i = 0; i < outputs.length; i++) {
