@@ -3,7 +3,8 @@
 
 ## How to use?
 ### Page
-When you first load up, you will be presented with this. ![](https://cdn.discordapp.com/attachments/1064471000932155434/1203768065842483230/image.png? ex=65d24b5f&is=65bfd65f&hm=faa7d4f0de20b7263ebf3fa8945ee7e73db034c43ebe58e8b41fef4e30183b92&)
+When you first load up, you will be presented with this. 
+![](https://cdn.discordapp.com/attachments/1064471000932155434/1203768065842483230/image.png? ex=65d24b5f&is=65bfd65f&hm=faa7d4f0de20b7263ebf3fa8945ee7e73db034c43ebe58e8b41fef4e30183b92&)
  
  ## Tools
  There are 4 tools (*in the current version*) :
