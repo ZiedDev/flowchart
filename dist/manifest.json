@@ -1,0 +1,9 @@
+{
+    "name": "Flowist",
+    "short_name": "Flowist",
+    "theme_color": "#E6EDF3",
+    "background_color": "#0D1117",
+    "display": "standalone",
+    "Scope": "/",
+    "start_url": "/"
+}
