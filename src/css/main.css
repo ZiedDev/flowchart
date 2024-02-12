@@ -8,6 +8,9 @@
 }
 
 .title {
+    position: relative;
+    z-index: 10;
+
     display: flex;
     align-items: center;
     justify-content: space-around;
@@ -24,35 +27,95 @@
     width: 43%;
     padding-left: 2%;
     display: flex;
+    background-color: #010409;
 }
 
-.title>.title-mobile {
+.title>.title-mobile-button {
     display: none;
 }
 
-.title h2 {
+.title .credit-button {
     width: 43%;
-    padding-right: 2%;
-    display: flex;
-    justify-content: end;
-}
-
-.title h2 a {
+    margin-right: 2%;
+    height: 100%;
+    background-color: transparent;
     color: aliceblue;
+    border: none;
+    cursor: pointer;
+    background-color: #010409;
 }
 
-.title h2 a:hover {
-    text-decoration: 2pt aliceblue underline;
+.title .credit-button h2 {
+    width: fit-content;
+    margin-left: auto;
 }
 
 .run-button,
 .save-button,
-.clear-history-button {
+.clear-history-button,
+.import-export-button {
     width: max(5%, 4rem);
     height: 100%;
     background-color: transparent;
     border: none;
     cursor: pointer;
+    background-color: #010409;
+}
+
+.import-export-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: relative;
+}
+
+.import-export-container {
+    z-index: -1;
+    display: flex;
+    flex-direction: column;
+
+    position: absolute;
+    top: 100%;
+}
+
+.import-button,
+.export-button {
+    z-index: 100;
+
+    -moz-user-select: none;
+    user-select: none;
+    cursor: pointer;
+
+    margin-top: 0.5rem;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+
+    color: aliceblue;
+    border: 0.5pt #21262D solid;
+    background-color: #010409;
+    border-radius: 0.5rem;
+    box-shadow: var(--shadow-down-medium);
+
+    translate: 0 -500%;
+
+    padding: 0.5rem;
+}
+
+.import-button {
+    transition: transform 500ms ease-out;
+}
+
+.export-button {
+    transition: transform 750ms ease-out;
+}
+
+.show-buttons>.import-button,
+.show-buttons>.export-button {
+    transform: translateY(500%);
 }
 
 .running-button {
@@ -154,6 +217,7 @@
     height: 150rem;
 
     position: relative;
+    transform-origin: top left;
 }
 
 .block-container {
@@ -278,6 +342,26 @@
     position: absolute;
     top: 90%;
     border-radius: 100%;
+}
+
+input[type=file]::file-selector-button {
+    content: '';
+    background-color: transparent;
+    border: transparent;
+}
+
+input[type=file] {
+    padding: 2rem;
+    background: transparent;
+    border-radius: 1rem;
+    border: #0D1117 2pt dashed;
+}
+
+input[type=file]::file-selector-button {
+    margin-right: 0.25rem;
+    border: none;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.5rem;
 }
 
 .draggable {

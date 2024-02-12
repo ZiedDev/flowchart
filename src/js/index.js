@@ -7,6 +7,7 @@ import '../css/main.css'
 import '../css/mainMobile.css';
 
 import runNode from './runChart.js'
+import createModal from './modal.js'
 import flowchartJson from '../json/flowchart.json'
 
 const flowchartBoard = document.getElementById('flowchart-board')
@@ -615,14 +616,118 @@ if (localStorage['flowchart'] == undefined) {
 
 // save the current flowchart to the LocalStorage
 document.getElementById('save-button').addEventListener('click', () => {
-    localStorage['flowchart'] = JSON.stringify(objectifyChart())
-    alert('Saved the current flowchart in the Local Storage')
+    const modalContent = createModal(
+        'Save this Flowchart',
+        [
+            'Do you want to save this Flowchart?',
+        ],
+        ['  Yes  ', () => {
+            localStorage['flowchart'] = JSON.stringify(objectifyChart())
+            document.body.appendChild(createModal(
+                'Done',
+                ['Flowchart is saved'],
+                ['  Ok  ', () => { }]
+            ))
+        }],
+        ['  No  ', () => { }],
+    )
+
+    document.body.appendChild(modalContent)
 })
 
 // clear the LocalStorage
 document.getElementById('clear-history-button').addEventListener('click', () => {
-    localStorage.clear()
-    alert('Removed the currently saved flowchart. Restored to the default flowchart')
-
-    personifyChart(flowchartJson)
+    document.body.appendChild(createModal(
+        'Restore this Flowchart',
+        [
+            'Do you want to clear the current saved Flowchart <br> and restore to default?',
+        ],
+        ['  Yes  ', () => {
+            localStorage.clear()
+            document.body.appendChild(createModal(
+                'Done',
+                ['Everything has been restored to default'],
+                ['  Ok  ', () => { }]
+            ))
+            personifyChart(flowchartJson)
+        }],
+        ['  No  ', () => { }],
+    ))
 })
+
+// toggle input export buttons
+document.getElementById('import-export-button').addEventListener('click', () => {
+    document.getElementById('import-export-container').classList.toggle('show-buttons')
+})
+
+let importedFile
+
+// import button 
+async function readImport(event) {
+    const file = event.target.files.item(0)
+    const content = await file.text()
+
+    importedFile = content
+}
+
+document.getElementById('import-button').addEventListener('click', () => {
+    document.body.appendChild(createModal(
+        'Import',
+        [
+            'Import an existing Flowchart.json <br> file to load it',
+            ['<input type="file" id="imported-file" accept=".json">', () => {
+                addGlobalEventListener('change', '#imported-file', readImport)
+            }],
+        ],
+        ['  Import  ', () => {
+            document.body.appendChild(createModal(
+                'Done',
+                ['Flowchart Imported'],
+                ['  Ok  ', () => { }]
+            ))
+
+            personifyChart(JSON.parse(importedFile))
+        }]
+    ))
+})
+
+// export button
+document.getElementById('export-button').addEventListener('click', () => {
+    let blob = new Blob([JSON.stringify(objectifyChart())], { type: 'application/json' })
+
+    const a = document.createElement('a')
+    a.download = 'Flowchart.json'
+    a.href = window.URL.createObjectURL(blob)
+    a.click() // Trigger download
+})
+
+// credit button 
+const creditText = createModal(
+    'Credit', // title
+    [
+        'Thanks For using <br> the website <3',
+        'Website created by <br> <a href="https://github.com/ZiedDev">Zied</a> & <a href="https://github.com/omar-elsherbiny">Sherbo</a>',
+        'Libraries used: <br> <a href="https://github.com/anseki/leader-line">LeaderLine</a> <br> <a href="https://github.com/anseki/plain-draggable">PlainDraggable</a> <br> <a href="https://github.com/GoogleChromeLabs/pointer-tracker">Pointer-Tracker</a> <br> <a href="https://webpack.js.org/">Webpack</a>',
+        'Repository: <br> <a href="https://github.com/ZiedDev/flowchart">Flowist</a>'
+    ], // content
+)
+
+document.getElementById('credit-button').addEventListener('click', () => {
+    document.body.appendChild(creditText)
+})
+
+// credit button (mobile)
+document.getElementById('title-mobile-button').addEventListener('click', () => {
+    document.body.appendChild(creditText)
+})
+
+// Global EventListener
+function addGlobalEventListener(type, selector, callback, options) {
+    document.addEventListener(
+        type,
+        e => {
+            if (e.target.matches(selector)) callback(e)
+        },
+        options
+    )
+}

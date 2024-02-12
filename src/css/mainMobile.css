@@ -1,4 +1,8 @@
 @media screen and (orientation: portrait) {
+    .flowchart-board-container {
+        overflow: auto;
+    }
+
     .main-content {
         height: calc(100dvh - 7rem - 0.5pt);
 
@@ -23,8 +27,8 @@
     .title {
         display: grid;
         grid-template-areas:
-            'a a a'
-            'b c d';
+            'a a a a'
+            'b c d e';
 
         align-items: initial;
         justify-content: initial;
@@ -33,17 +37,24 @@
         height: auto;
     }
 
-    .title>h2,
+    .credit-button {
+        display: none;
+    }
+
     .title>h1 {
         display: none;
     }
 
-    .title>.title-mobile {
+    .title>.title-mobile-button {
         display: flex;
         grid-area: a;
 
         width: 100%;
         height: 4rem;
+
+        background-color: #010409;
+        border: none;
+        color: aliceblue;
 
         justify-content: center;
         align-items: center;
@@ -69,8 +80,17 @@
         border-top: #21262D solid 0.5pt;
     }
 
-    .clear-history-button {
+    .import-export-button {
         grid-area: d;
+        width: 100%;
+        height: 3rem;
+
+        border-right: #21262D solid 0.5pt;
+        border-top: #21262D solid 0.5pt;
+    }
+
+    .clear-history-button {
+        grid-area: e;
         width: 100%;
         height: 3rem;
 
