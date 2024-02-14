@@ -35,7 +35,8 @@
 }
 
 .title .credit-button {
-    width: 43%;
+    width: 5%;
+    margin-left: 38%;
     margin-right: 2%;
     height: 100%;
     background-color: transparent;
@@ -45,14 +46,17 @@
     background-color: #010409;
 }
 
+.title .credit-button:hover h2 {
+    text-decoration: underline aliceblue 2pt;
+}
+
 .title .credit-button h2 {
     width: fit-content;
     margin-left: auto;
 }
 
 .run-button,
-.save-button,
-.clear-history-button,
+.save-revert-button,
 .import-export-button {
     width: max(5%, 4rem);
     height: 100%;
@@ -62,6 +66,17 @@
     background-color: #010409;
 }
 
+.import-export-button::after {
+    pointer-events: none;
+    content: '';
+    background-color: #010409;
+    position: absolute;
+    left: 100%;
+    height: 100%;
+    width: 5rem;
+}
+
+.save-revert-button,
 .import-export-button {
     display: flex;
     justify-content: center;
@@ -70,7 +85,14 @@
     position: relative;
 }
 
+.save-revert-button *,
+.import-export-button * {
+    pointer-events: none;
+}
+
+.save-revert-container,
 .import-export-container {
+    pointer-events: none;
     z-index: -1;
     display: flex;
     flex-direction: column;
@@ -79,8 +101,11 @@
     top: 100%;
 }
 
+.save-button,
+.revert-button,
 .import-button,
 .export-button {
+    pointer-events: all;
     z-index: 100;
 
     -moz-user-select: none;
@@ -105,14 +130,18 @@
     padding: 0.5rem;
 }
 
+.save-button,
 .import-button {
     transition: transform 500ms ease-out;
 }
 
+.revert-button,
 .export-button {
     transition: transform 750ms ease-out;
 }
 
+.show-buttons>.save-button,
+.show-buttons>.revert-button,
 .show-buttons>.import-button,
 .show-buttons>.export-button {
     transform: translateY(500%);
@@ -152,7 +181,7 @@
     user-select: none;
 }
 
-.add-blocks-panel-container div {
+.add-blocks-panel-container>.add-blocks-panel>div {
     cursor: pointer;
 }
 

@@ -628,15 +628,14 @@ document.getElementById('save-button').addEventListener('click', () => {
                 ['Flowchart is saved'],
                 ['  Ok  ', () => { }]
             ))
-        }],
-        ['  No  ', () => { }],
+        }]
     )
 
     document.body.appendChild(modalContent)
 })
 
 // clear the LocalStorage
-document.getElementById('clear-history-button').addEventListener('click', () => {
+document.getElementById('revert-button').addEventListener('click', () => {
     document.body.appendChild(createModal(
         'Restore this Flowchart',
         [
@@ -650,14 +649,33 @@ document.getElementById('clear-history-button').addEventListener('click', () => 
                 ['  Ok  ', () => { }]
             ))
             personifyChart(flowchartJson)
-        }],
-        ['  No  ', () => { }],
+        }]
     ))
+})
+
+// close toggles on click anywhere
+document.addEventListener('click', (e) => {
+    if (e.target.matches('#save-revert-button')) {
+        return
+    }
+    else if (e.target.matches('#import-export-button')) {
+        return
+    }
+
+    document.getElementById('import-export-container').classList.remove('show-buttons')
+    document.getElementById('save-revert-container').classList.remove('show-buttons')
+})
+
+// toggle save revert buttons
+document.getElementById('save-revert-button').addEventListener('click', () => {
+    document.getElementById('save-revert-container').classList.toggle('show-buttons')
+    document.getElementById('import-export-container').classList.remove('show-buttons')
 })
 
 // toggle input export buttons
 document.getElementById('import-export-button').addEventListener('click', () => {
     document.getElementById('import-export-container').classList.toggle('show-buttons')
+    document.getElementById('save-revert-container').classList.remove('show-buttons')
 })
 
 let importedFile
@@ -680,13 +698,20 @@ document.getElementById('import-button').addEventListener('click', () => {
             }],
         ],
         ['  Import  ', () => {
-            document.body.appendChild(createModal(
-                'Done',
-                ['Flowchart Imported'],
-                ['  Ok  ', () => { }]
-            ))
-
-            personifyChart(JSON.parse(importedFile))
+            try {
+                personifyChart(JSON.parse(importedFile))
+                document.body.appendChild(createModal(
+                    'Done',
+                    ['Flowchart Imported'],
+                    ['  Ok  ', () => { }]
+                ))
+            } catch (error) {
+                document.body.appendChild(createModal(
+                    'Error',
+                    ['Invalid Flowchart'],
+                    ['  Ok  ', () => { }]
+                ))
+            }
         }]
     ))
 })

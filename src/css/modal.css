@@ -27,6 +27,7 @@
     animation: zoomIn forwards 100ms ease-out;
 }
 
+.modal h1,
 .modal h2 {
     text-align: center;
 }
